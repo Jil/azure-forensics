@@ -11,40 +11,25 @@ To deploy the LAB environment click on the **Deploy to Azure** button above. The
 |Subscription|The subscription where the resource groups will be deployed|Current subscription|
 |Region|The region where the deployment start. NOTE: All the resources will be deployed in the region defined in the Coc-Location paramtere below||
 |Coc-Location|The region where the resources will be deployed.|westeurope|
-|Coc-prod-rg_name
-CoC-Production
-Coc-prod-vnet_name
-CoC-Production-vnet
-Coc-prod-nsg_name
-CoC-Production-vnet-server-nsg
-Coc-prod-keyvault_name
-CoC-Prod-keyvault-<UNIQUESTRING>
-Coc-prod-VM01_name
-CoC-Prod-VM01
-Coc-prod-VM01_admin Username
-cocprodadmin
-Coc-prod-VM01_admin Password
-Coc-soc-rg_name
-CoC-SOC
-Coc-soc-vnet_name
-CoC-SOC-vnet
-Coc-soc-nsg_name
-CoC-SOC-vnet-soc-subnet01-nsg
-Coc-soc-keyvault_name
-CoC-SOC-keyvault-<UNIQUESTRING>
-Coc-soc-storage Account_name
-cocsocstorage<UNIQUESTRING>
-Coc-soc-Log An Wks_name
-CoC-SOC-LogAnWks-<UNIQUESTRING>
-Coc-soc-automation Account_name
-CoC-SOC-AutomationAcct
-Coc-soc-worker Group Name
-CoC-HRW-Windows
-Coc-soc-HRW_VM_name
-CoC-SOC-HRW
-Coc-soc-HRW_admin Username
-cocsocadmin
-Coc-soc-HRW_admin Password
+|Coc-prod-rg_name |The name of the resource group for the Production environment|CoC-Production|
+|Coc-prod-vnet_name |The name of the virtual network for the Production environment|CoC-Production-vnet|
+|Coc-prod-nsg_name |The name of the network security group for the Production environment|CoC-Production-vnet-server-nsg|
+|Coc-prod-keyvault_name |The name of the key vault for the Production environment|CoC-Production-keyvault-\<UNIQUESTRING>|
+|Coc-prod-VM01_name |The name of the VM for the Production environment|CoC-Prod-VM01|
+|Coc-prod-VM01_adminUsername |The name of the admin user for the VM for the Production environment|cocprodadmin|
+|Coc-prod-VM01_adminPassword|The password of the admin user for the VM for the Production environment||
+||||
+|Coc-soc-rg_name |The name of the resource group for the SOC environment|CoC-SOC|
+|Coc-soc-vnet_name |The name of the virtual network for the SOC environment|CoC-SOC-vnet|
+|Coc-soc-nsg_name |The name of the network security group for the SOC environment|CoC-SOC-vnet-soc-subnet01-nsg|
+|Coc-soc-keyvault_name |The name of the key vault for the SOC environment|CoC-SOC-keyvault-\<UNIQUESTRING>|
+|Coc-soc-storageAccount_name |The name of the storage account for the SOC environment|cocsocstorage-\<UNIQUESTRING>|
+|Coc-soc-LogAnWks_name |The name of the Log Analytics Workspace for the SOC environment|CoC-SOC-LogAnWks-\<UNIQUESTRING>|
+|Coc-soc-automatioAccount_name |The name of the automation account for the SOC environment|CoC-SOC-AutomationAcct|
+|CoC-SOC-workerGroup_name|The name of the Hybrid Worker Group for the SOC environment|CoC-HRW-Windows|
+|Coc-soc-HRW_VM_name |The name of the Hybrid Runbook Worker VM for the SOC environment|CoC-SOC-HRW|
+|Coc-soc-HRW_adminUsername |The name of the admin user for the Hybrid Runbook Worker VM for the SOC environment|cocsocadmin|
+|Coc-soc-HRW_adminPassword |The password of the admin user for the Hybrid Runbook Worker VM for the SOC environment||
 
 
 
