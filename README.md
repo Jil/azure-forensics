@@ -78,12 +78,12 @@ Access the automation account within the SOC resource group and navigate to the 
 
 Once the job concludes, examine the job's Output to verify successful completion.
 
-![Screenshot of a completed job](./.diagrams/JobCompleted_Output.jpg)
+![Screenshot of a completed job](./.diagrams/JobCompleted_Out.jpg)
 
-The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 6th August 2023 at 1:00 UTC will be *202308060100_*.  
+The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 8th August 2023 at 14:30 UTC will be *202308081430_*.  
 The digital evidence is stored in the *immutable* blob container of the storage account in the SOC resource group and can be downloaded for inspection. 
 ![Screenshot of the immutable container](./.diagrams/JobCompleted_SA.jpg)
-The hash of the digital evidence is stored in the Key Vault of the SOC stored with the same name of the digital evidence followed by the suffix "-hash". The BEK keys are stored in the key vault of the SOC with the name of the digital evidence.
+The hash of the digital evidence is stored in the Key Vault of the SOC stored with the same name of the digital evidence followed by the suffix "-hash" and the algorithm used. The BEK keys are stored in the key vault of the SOC with the name of the digital evidence.
 ![Screenshot of the Key Vault](./.diagrams/JobCompleted_KV.jpg)
 After downloading digital evidence, recalculate the hash for comparison with the Key Vault-stored hash to verify integrity.
 
