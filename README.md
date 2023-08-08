@@ -96,6 +96,7 @@ For digital evidence decryption, get the BEK keys from the SOC environment's Key
 For your convenience, you can utilize the provided [zip file](https://famascicoc.blob.core.windows.net/utilities/Hash.zip) to recalculate the hash file on your end. The zip file includes a PowerShell script and the corresponding DLL.
 
 Run the *hash.ps1* Powershell script providing the following parameters:
+
 **-FileList**: comma-separated list of files to be hashed
 **-HashAlgorithm**: the algorithm used to calculate the hash of the digital evidence. Supported Values are *MD5, SHA256, SKEIN, KECCAK (or SHA3)*
 
