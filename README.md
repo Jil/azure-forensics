@@ -5,7 +5,8 @@ This guide details the process of deploying the LAB environment for the [Compute
 
 To initiate the deployment of the LAB environment, click on the **Deploy to Azure** button provided above. This action will trigger the deployment process within the Azure Portal. You will be prompted to provide the following parameters:
 
-> NOTE: For resources such as storage accounts, key vaults, etc., which necessitate globally unique names, kindly replace the \<UNIQUESTRING> pplaceholder with a unique string of your choice, following the resource's constraints (e.g., maximum character count, lowercase only, etc.).
+> [!NOTE]
+> For resources such as storage accounts, key vaults, etc., which necessitate globally unique names, kindly replace the \<UNIQUESTRING> pplaceholder with a unique string of your choice, following the resource's constraints (e.g., maximum character count, lowercase only, etc.).
 
 | Parameter | Description | Default value |
 |-----------|-------------|---------------|
@@ -33,7 +34,8 @@ To initiate the deployment of the LAB environment, click on the **Deploy to Azur
 |Coc-soc-HRW_adminPassword |The password of the admin user for the Hybrid RunBook Worker VM for the SOC environment||
 
 
->Note: The deployment process is expected to take approximately 5 minutes to complete.
+> [!NOTE]
+> The deployment process is expected to take approximately 5 minutes to complete.
 
 ![Screenshot of a succeeded deployment](./.diagrams/SucceededDeployment.jpg)
 
@@ -71,7 +73,8 @@ Access the automation account within the SOC resource group and navigate to the 
 |CALCULATEHASH|If true the RunBook will calculate the hash of the digital evidence. Supported values are TRUE or FALSE| TRUE|
 |HASHALGORITHM|The algorithm used to calculate the hash of the digital evidence. Supported Values are MD5, SHA256, SKEIN, KECCAK (or SHA3)|SHA256|
 
->NOTE: The RunBook applied to the LAB's deployed VM will take around 45 minutes to complete (or 15 minutes without hash calculation). Completion time depends on attached disk sizes. Hash calculation is time-intensive, executed via parallel jobs for faster processing across all disks.
+> [!NOTE]
+> The RunBook applied to the LAB's deployed VM will take around 45 minutes to complete (or 15 minutes without hash calculation). Completion time depends on attached disk sizes. Hash calculation is time-intensive, executed via parallel jobs for faster processing across all disks.
 
 Once the job concludes, examine the job's Output to verify successful completion.
 
@@ -83,4 +86,20 @@ The digital evidence is stored in the *immutable* blob container of the storage 
 The hash of the digital evidence is stored in the Key Vault of the SOC stored with the same name of the digital evidence followed by the suffix "-hash". The BEK keys are stored in the key vault of the SOC with the name of the digital evidence.
 ![Screenshot of the Key Vault](./.diagrams/JobCompleted_KV.jpg)
 After downloading digital evidence, recalculate the hash for comparison with the Key Vault-stored hash to verify integrity.
+
+> [!NOTE]
+> The [Utilities](#utilities) section below provide a PowerShell script to recalculate the hash of the digital evidence.
+
 For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/#evidence-retrieval).
+
+## Utilities
+For your convenience, you can utilize the provided [zip file](https://famascicoc.blob.core.windows.net/utilities/Hash.zip) to recalculate the hash file on your end. The zip file includes a PowerShell script and the corresponding DLL.
+
+Run the *hash.ps1* Powershell script providing the following parameters:
+**-FileList**: comma-separated list of files to be hashed
+**-HashAlgorithm**: the algorithm used to calculate the hash of the digital evidence. Supported Values are *MD5, SHA256, SKEIN, KECCAK (or SHA3)*
+
+This is a sample command to calculate the MD5 hash of 3 files:
+```powershell
+.\hash.ps1 -FileList "C:\temp\osdisk.vhd", "C:\temp\datadisk-00.vhd" ,"C:\temp\datadisk-01.vhd" -HashAlgorithm MD5   
+```
