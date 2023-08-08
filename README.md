@@ -88,7 +88,7 @@ The hash of the digital evidence is stored in the Key Vault of the SOC stored wi
 After downloading digital evidence, recalculate the hash for comparison with the Key Vault-stored hash to verify integrity.
 
 > [!NOTE]
-> The [Utilities](#utilities) section below provide a PowerShell script to recalculate the hash of the digital evidence.
+> The [Utilities](#utilities) section below provides a PowerShell script to recalculate the hash of the digital evidence.
 
 For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/#evidence-retrieval).
 
