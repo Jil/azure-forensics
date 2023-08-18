@@ -6,7 +6,7 @@ This guide details the process of deploying the LAB environment for the [Compute
 To initiate the deployment of the LAB environment, click on the **Deploy to Azure** button provided above. This action will trigger the deployment process within the Azure Portal. You will be prompted to provide the following parameters:
 
 > [!NOTE]
-> For resources such as storage accounts, key vaults, etc., which necessitate globally unique names, kindly replace the \<UNIQUESTRING> pplaceholder with a unique string of your choice, following the resource's constraints (e.g., maximum character count, lowercase only, etc.).
+> For resources such as storage accounts, key vaults, etc., which necessitate globally unique names, kindly replace the \<UNIQUESTRING> placeholder with a unique string of your choice, following the resource's constraints (e.g., maximum character count, lowercase only, etc.).
 
 | Parameter | Description | Default value |
 |-----------|-------------|---------------|
@@ -102,7 +102,7 @@ For your convenience, you can utilize the provided [zip file](https://famascicoc
 
 Run the *hash.ps1* Powershell script providing the following parameters:
 
-**-FileList**: comma-separated list of files to be hashed
+**-FileList**: comma-separated list of files to be hashed <BR>
 **-HashAlgorithm**: the algorithm used to calculate the hash of the digital evidence. Supported Values are *MD5, SHA256, SKEIN, KECCAK (or SHA3)*
 
 This is a sample command to calculate the MD5 hash of 3 files:
