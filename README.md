@@ -102,7 +102,7 @@ For your convenience, you can utilize the provided [zip file](https://famascicoc
 
 Run the *hash.ps1* Powershell script providing the following parameters:
 
-**-FileList**: comma-separated list of files to be hashed
+**-FileList**: comma-separated list of files to be hashed <BR>
 **-HashAlgorithm**: the algorithm used to calculate the hash of the digital evidence. Supported Values are *MD5, SHA256, SKEIN, KECCAK (or SHA3)*
 
 This is a sample command to calculate the MD5 hash of 3 files:
