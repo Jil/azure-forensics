@@ -57,7 +57,7 @@ The SOC resource group contains:
     1. a file share named *hash* used for calculating digital evidence hashes.
 1. A **key vault** for storing, in the SOC environment, a copy of the BEK keys and the hash of the digital evidence processed.
 1. An **automation account** configured with:
-    1. A RunBook implementing the Chain of Custody process as outlined in the[article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
+    1. A RunBook implementing the Chain of Custody process as outlined in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
     1. Variables for the RunBook, automatically populated with SOC environment values.
     1. A System Managed Identity granted necessary permissions for both Production and SOC resource groups.
     1. An Hybrid Worker Group containing the Hybrid RunBook Worker (HRW) VM
