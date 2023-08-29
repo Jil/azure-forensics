@@ -1,7 +1,7 @@
 # CoC LAB Deployment
 This guide details the process of deploying the LAB environment for the [Computer Forensics Chain of Custody in Azure](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Ffamascicoc.blob.core.windows.net%2Farmtemplate%2Fcoc-main.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fgithub.com%2Ffabmas%2Fcoc%2Fblob%2Fmain%2F.armtemplate%2Fcoc-main.json)
 
 To initiate the deployment of the LAB environment, click on the **Deploy to Azure** button provided above. This action will trigger the deployment process within the Azure Portal. You will be prompted to provide the following parameters:
 
