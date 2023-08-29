@@ -540,7 +540,8 @@
         "location": "[resourceGroup().location]",
         "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]",
-            "[resourceID('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+            "[resourceID('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
+            "[resourceId('Microsoft.Authorization/roleAssignments',concat('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp')))]"
         ],
         "properties": {
             "publisher": "Microsoft.Compute",
@@ -903,7 +904,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[guid('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp'))]",
+            "name": "[concat('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp'))]",
             "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
