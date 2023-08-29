@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+        "value": "westeurope"
+      },
+      "virtualMachines_CoC_Prod_VM01_name": {
+        "value": "CoC-Prod-VM01"
+      },
+      "adminUsername": {
+        "value": "cocprodadmin"
+      },
+      "adminPassword": {
+        "value": "P@sswordCOC01"
+      },
+      "vaults_CoC_Production_keyvault_name": {
+        "value": "CoC-Prod-keyvault-UNIQUESTRING"
+      },
+      "virtualNetworks_CoC_Production_vnet_name": {
+        "value": "CoC-Prod-vnet"
+      },
+      "networkSecurityGroups_CoC_Production_vnet_server_nsg_name": {
+        "value": "CoC-Prod-vnet-server-nsg"
+      }
+    }
+  }

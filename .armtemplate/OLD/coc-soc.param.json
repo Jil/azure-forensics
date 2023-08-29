@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westeurope"
+        },
+        "virtualMachines_CoC_HRW_VM_name": {
+            "value": "myCoC-HRW-VM"
+        },
+        "virtualNetworks_CoC_SOC_vnet_name": {
+            "value": "myCoC-SOC-vnet"
+        },
+        "storageAccounts_cocsocstorageacct_name": {
+            "value": "mycocsocstorageacct-UNIQUESTRING"
+        },
+        "vaults_CoC_SOC_keyvault_name": {
+            "value": "myCoC-SOC-keyvault-UNIQUESTRING"
+        },
+        "workspaces_CoC_SOC_LogAnWks_name": {
+            "value": "myCoC-SOC-LogAnWks-UNIQUESTRING"
+        },
+        "automationAccounts_CoC_SOC_Automation_name": {
+            "value": "myCoC-SOC-Automation"
+        },
+        "networkSecurityGroups_nsg_name":{
+            "value": "myCoC-SOC-nsg"
+        },
+        "adminUsername": {
+            "value": "cocsocadmin"
+        },
+        "adminPassword": {
+            "value": "P@sswordSOC01"
+        },
+        "storage_Account_Type": {
+            "value": "Standard_LRS"
+        },
+        "createWorkerGroup": {
+            "value": "yes"
+        }
+    }
+}
