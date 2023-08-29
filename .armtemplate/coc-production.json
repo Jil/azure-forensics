@@ -265,7 +265,7 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
                 "fileUris": [
-                    "https://famascicoc.blob.core.windows.net/powershell/prod-vm.ps1"
+                    "https://raw.githubusercontent.com/fabmas/coc/main/.powershell/prod-vm.ps1"
                 ],
                 "commandToExecute": "[concat(' start powershell -ExecutionPolicy Unrestricted -File prod-vm.ps1 -CoCProdKeyvaultName ', parameters('vaults_CoC_Production_keyvault_name'), ' -CoCProdRGName ', resourceGroup().name, ' -CoCProdVMName ', parameters('virtualMachines_CoC_Prod_VM01_name'), ' -VMIdentity ', reference(resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_Prod_VM01_name')), '2023-03-01', 'full').identity.principalId)]"
             }

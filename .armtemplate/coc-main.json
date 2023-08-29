@@ -168,7 +168,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://famascicoc.blob.core.windows.net/armtemplate/coc-production.json",
+          "uri": "https://raw.githubusercontent.com/fabmas/coc/main/.armtemplate/coc-production.json",
           "contentVersion": "1.0.0.0"
       },
       "parameters": {
@@ -209,7 +209,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://famascicoc.blob.core.windows.net/armtemplate/coc-soc.json",
+          "uri": "https://raw.githubusercontent.com/fabmas/coc/main/.armtemplate/coc-soc.json",
           "contentVersion": "1.0.0.0"
         },
       "parameters": {

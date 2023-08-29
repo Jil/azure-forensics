@@ -464,7 +464,7 @@
                 "logActivityTrace": 0,
                 "description": "This version is for Windows Hybrid Runbook Worker",
                  "publishContentLink": {
-                    "uri": "https://famascicoc.blob.core.windows.net/runbook/Copy-VmDigitalEvidenceWin_v21.ps1",
+                    "uri": "https://raw.githubusercontent.com/fabmas/coc/main/.runbook/Copy-VmDigitalEvidenceWin_v21.ps1",
                     "version": "2.1.0.0"
                 }
             }
@@ -549,7 +549,7 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
                 "fileUris": [
-                    "https://famascicoc.blob.core.windows.net/powershell/soc-hrw.ps1"
+                    "https://raw.githubusercontent.com/fabmas/coc/main/.powershell/soc-hrw.ps1"
                 ],
                 "commandToExecute": "[concat(' start powershell -ExecutionPolicy Unrestricted -File soc-hrw.ps1 -StorageAccountResourceID ', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name')), ' -HRWIdentity ', reference(resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name')), '2023-03-01', 'full').identity.principalId)]"
             }
