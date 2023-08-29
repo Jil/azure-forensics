@@ -98,7 +98,7 @@ To remove the LAB environment, delete the resource groups created for the Produc
 ![Screenshot of the Legal Hold Access Policy deletion](./.diagrams/LegalHold_Delete.jpg)
 
 ## Appendixes - Hash utility
-For your convenience, you can utilize the provided [zip file](./.utilities/Hash.zip) to recalculate the hash file on your end. The zip file includes a PowerShell script and the corresponding DLL.
+For your convenience, you can utilize the provided [zip file](https://github.com/fabmas/coc/raw/main/.utilities/Hash.zip) to recalculate the hash file on your end. The zip file includes a PowerShell script and the corresponding DLL.
 
 Run the *hash.ps1* Powershell script providing the following parameters:
 
