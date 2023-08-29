@@ -84,6 +84,7 @@ Write-Output $setLegalHoldPolicy
 Write-Host $setLegalHoldPolicy
 
 # Remove the Hybrid Runbook system identity from the Owner role assigned to the storage account
+Start-Sleep -s 30
 Remove-AzRoleAssignment -PrincipalId $HRWIdentity -Scope "/subscriptions/$subscriptionID/resourceGroups/$resourceGroupName/providers/Microsoft.Storage/storageAccounts/$storageAccountName" -RoleDefinitionName "Owner"
 
 

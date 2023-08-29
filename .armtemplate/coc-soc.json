@@ -101,7 +101,6 @@
     },
     "variables": {
         "UniqueStringBasedOnTimeStamp": "[uniqueString(deployment().name, parameters('_CurrentDateTimeInTicks'))]",
-        "TempROLE_OwnerOnStorageAccount-VMidentity":"[guid('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp'))]",
         "networkInterfaces_coc_hrw_nic_name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'), '-nic')]",
         "publicIPAddresses_CoC_HRW_VM_ip_name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'), '-pip')]"
     },
@@ -541,8 +540,7 @@
         "location": "[resourceGroup().location]",
         "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]",
-            "[resourceID('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
-            "[resourceId('Microsoft.Authorization/roleAssignments',variables('TempROLE_OwnerOnStorageAccount-VMidentity'))]"
+            "[resourceID('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
         ],
         "properties": {
             "publisher": "Microsoft.Compute",
@@ -905,7 +903,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[variables('TempROLE_OwnerOnStorageAccount-VMidentity')]",
+            "name": "[guid('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp'))]",
             "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
