@@ -376,7 +376,7 @@
                 "privateLinkServiceNetworkPolicies": "Enabled"
             }
         },
-        // role needed only in LAB to run the script that enable Azure Disk Encryption inside the VM
+        // Temporary role needed only in LAB to run the script that enable Azure Disk Encryption inside the VM
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",

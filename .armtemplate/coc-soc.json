@@ -899,7 +899,7 @@
         },
 
 
-         // role needed only in LAB to run the script that assigns LegalHolding Access Policy to the immutable container of the Storage Account
+         // Temporary role needed only in LAB to run the script that assigns LegalHolding Access Policy to the immutable container of the Storage Account
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
