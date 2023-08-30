@@ -37,7 +37,7 @@
         "metadata": {
             "description": "Name of the key vault."
         },
-        "defaultValue": "CoC-Prod-keyvault-<UNIQUESTRING>",
+        "defaultValue": "CoC-Prod-KV-<UNIQUESTRING>",
         "type": "String"
     },
     "coc-prod-VM01_name": {
@@ -89,7 +89,7 @@
             "description": "UNIQUE name of the Key Vault resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-keyvault-<UNIQUESTRING>"
+        "defaultValue": "CoC-SOC-KV-<UNIQUESTRING>"
     },
     "coc-soc-storageAccount_name": {
         "metadata": {
