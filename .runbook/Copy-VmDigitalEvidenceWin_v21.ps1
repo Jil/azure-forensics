@@ -72,7 +72,7 @@ $destSAblob = Get-AutomationVariable -Name 'destSAblob' # The name of the storag
 $destSAfile = Get-AutomationVariable -Name 'destSAfile' # The name of the storage account for FILE
 $destKV     = Get-AutomationVariable -Name 'destKV'     # The name of the keyvault to store a copy of the BEK in the dest subscription
 
-# Please do not change the following contstants
+# Please do not change the following constants
 $destTempShare = 'hash'                               # The temporary file share mounted on the hybrid worker
 $destSAContainer = 'immutable'                        # The name of the container within the storage account
 $targetWindowsDir = "Z:"                              # The mapping path to the share that will contain the disk and its hash. By default, the scripts assume you mounted the Azure file share on drive Z.
