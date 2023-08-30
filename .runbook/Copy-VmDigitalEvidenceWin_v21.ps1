@@ -64,7 +64,7 @@ param (
 #$ErrorActionPreference = 'Stop'
 
 ######################################### CoC Constants ###################################################
-# Update the following constants with the values related to your environment
+# Update the following Automation Account Variable with the values related to your environment
 
 $destSubId  = Get-AutomationVariable -Name 'destSubId'  # The subscription containing the storage account being copied to (ex. 00112233-4455-6677-8899-aabbccddeeff)
 $destRGName = Get-AutomationVariable -Name 'destRGName' # The name of the resource group containing the storage account being copied to 
@@ -72,10 +72,10 @@ $destSAblob = Get-AutomationVariable -Name 'destSAblob' # The name of the storag
 $destSAfile = Get-AutomationVariable -Name 'destSAfile' # The name of the storage account for FILE
 $destKV     = Get-AutomationVariable -Name 'destKV'     # The name of the keyvault to store a copy of the BEK in the dest subscription
 
+# Please do not change the following contstants
 $destTempShare = 'hash'                               # The temporary file share mounted on the hybrid worker
 $destSAContainer = 'immutable'                        # The name of the container within the storage account
 $targetWindowsDir = "Z:"                              # The mapping path to the share that will contain the disk and its hash. By default, the scripts assume you mounted the Azure file share on drive Z.
-                                                      # If you need a different mounting point, update Z: in the script or set a variable for that. 
 $snapshotPrefix = (Get-Date).ToString('yyyyMMddHHmm') # The prefix of the snapshot to be created
 
 ############################################################################################################
@@ -205,18 +205,14 @@ if ($bios) {
     #  - "Contributor" on the Resource Group of target Virtual Machine. This provides snapshot rights on Virtual Machine disks
     #  - "Storage Account Contributor" on the immutable SOC Storage Account
     #  - "Key Vault Secrets Officer" on the SOC Key Vault
+    #  - "Key Vault Crypto Officer" on the SOC Key Vault (for future implementation of KEK option)
     #  - "Key Vault Secrets User" on the Key Vault used by target Virtual Machine
+    
 
     Write-Output "Logging in to Azure..."
     Connect-AzAccount -Identity
     Set-AzContext -Subscription $SubscriptionId
     ################################## Mounting fileshare #######################################
-    # The Storage account also hosts an Azure file share to use as a temporary repository for calculating the snapshot's hash value.
-    # The following doc shows a possible way to mount the Azure file share on Z:\ :
-    # https://docs.microsoft.com/azure/storage/files/storage-how-to-use-files-windows
-    #
-    # The following is a sample code: please adapt it to your environment and change the password 
-    # with the SAS key you used when you created the storage account
 
     If (!(Test-Path $targetWindowsDir)) {
        $connectTestResult = Test-NetConnection -ComputerName "$destSAfile.file.core.windows.net" -Port 445
