@@ -921,6 +921,11 @@
         "CoC_SOC_Automation_IdentityPrincipalID": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name')), '2022-08-08', 'full').identity.principalId]"
+        },
+
+        "CoC_SOC_HRW_PIP": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_CoC_HRW_VM_ip_name')), '2023-04-01', 'full').IpAddress]"
         }
     }
 }

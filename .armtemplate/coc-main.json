@@ -282,9 +282,15 @@
 
 
   "outputs": {
-    "outputFromNested": {
+    "CoC_SOC_Automation_IdentityPrincipalID": {
       "type": "string",
       "value": "[reference('CoC-SOC-nestedDeployment').outputs.CoC_SOC_Automation_IdentityPrincipalID.value]"
+    },
+
+    "CoC_SOC_HRW_PIP": {
+      "type": "string",
+      "value": "[reference('CoC-SOC-nestedDeployment').outputs.CoC_SOC_HRW_PIP.value]"
     }
+    
   }
 }
