@@ -925,7 +925,7 @@
 
         "CoC_SOC_HRW_PIP": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_CoC_HRW_VM_ip_name')), '2023-04-01', 'full').IpAddress]"
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_CoC_HRW_VM_ip_name')), '2023-04-01', 'full').properties.ipAddress]"
         }
     }
 }
