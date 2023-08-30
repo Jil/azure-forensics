@@ -457,8 +457,8 @@ if ($bios) {
     Write-Output "Operation completed."
     Write-Output "Elapsed time for the entire operation: $($swGlobal.Elapsed.TotalMinutes) minutes"
     Write-Output 
-    Write-Output "NOTE: $snapshotPrefix is the prefix used for:  "
-    Write-Output "  - the digital evidences stored in the SOC Storage Account ($destSAblob)" 
+    Write-Output "NOTE: $snapshotPrefix is the timestamp prefix used for:  "
+    Write-Output "  - the digital evidences stored in the immutable blob container of the SOC Storage Account ($destSAblob)" 
     Write-Output "  - the secrets (hash and BEK) stored in the SOC Key Vault ($destKV)"
     Write-Output "########################################################################"
 
