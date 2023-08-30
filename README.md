@@ -3,7 +3,7 @@ This guide details the process of deploying the LAB environment for the [Compute
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffabmas%2Fcoc%2Fmain%2F.armtemplate%2Fcoc-main.json)
 
-To initiate the deployment of the LAB environment, click on the **Deploy to Azure** button provided above. This action will trigger the deployment process within the Azure Portal. You will be prompted to provide the following parameters:
+To initiate the deployment of the LAB environment, verify to have the *Owner* role on the subscription then click on the **Deploy to Azure** button provided above. This action will trigger the deployment process within the Azure Portal. You will be prompted to provide the following parameters:
 
 > [!NOTE]
 > For resources such as storage accounts, key vaults, etc., which necessitate globally unique names, kindly replace the \<UNIQUESTRING> placeholder with a unique string of your choice, following the resource's constraints (e.g., maximum character count, lowercase only, etc.).
