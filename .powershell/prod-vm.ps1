@@ -52,6 +52,8 @@ Set-AzVMDiskEncryptionExtension -ResourceGroupName $CoCProdRGName -VMName $CoCPr
 
 # Remove the Hybrid Runbook system identity from the Owner role assigned to the storage account
 Start-Sleep -s 30
-Remove-AzRoleAssignment -PrincipalId $VMIdentity -Scope "/subscriptions/$subscriptionID/resourceGroups/$resourceGroupName/providers/Microsoft.Storage/storageAccounts/$storageAccountName" -RoleDefinitionName "Owner"
+$subscriptionID = (Get-AzContext).Subscription.Id
+Remove-AzRoleAssignment -PrincipalId $VMIdentity -Scope "/subscriptions/$subscriptionID/resourceGroups/$CoCProdRGName" -RoleDefinitionName "Owner"
+
 
 
