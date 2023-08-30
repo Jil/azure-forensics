@@ -93,12 +93,13 @@ After downloading digital evidence, recalculate the hash for comparison with the
 For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/#evidence-retrieval).
 
 ## Remove the LAB environment
-To remove the LAB environment, delete the resource groups created for the Production and SOC environments. Please note that to delete the SOC resource group, you must first delete the Legal Hold Access Policy from the *immutable* container in the storage account as shown in the screenshots below.
+To remove the LAB environment, delete the resource groups created for the Production and SOC environments. Please note that to delete the SOC resource group, you must first allow your IP address through the Firewall of the storage account and delete the Legal Hold Access Policy from the *immutable* container in the storage account as shown in the screenshots below.
+![Screenshot of the Firewall update](./.diagrams/SA_Firewall.jpg)
 ![Screenshot of the Legal Hold Access Policy selection](./.diagrams/LegalHold_Select.jpg)
 ![Screenshot of the Legal Hold Access Policy deletion](./.diagrams/LegalHold_Delete.jpg)
 
 ## Appendixes - Hash utility
-For your convenience, you can utilize the provided [zip file](https://github.com/fabmas/coc/raw/main/.utilities/Hash.zip) to recalculate the hash file on your end. The zip file includes a PowerShell script and the corresponding DLL.
+The provided  [zip file](https://github.com/fabmas/coc/raw/main/.utilities/Hash.zip) can be utilized to recalculate the hash file. It includes a PowerShell script and the corresponding DLL.
 
 Run the *hash.ps1* Powershell script providing the following parameters:
 

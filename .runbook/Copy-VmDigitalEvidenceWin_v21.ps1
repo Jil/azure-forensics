@@ -402,24 +402,6 @@ if ($bios) {
                 Remove-AzStorageFile -ShareName $destTempShare -Path $snapshot -Context $targetStorageContextFile
         }
 
-        # $i = 0
-        # foreach ($result in $results) {
-        #     $i++
-            
-        #     if ($i % 2 -eq 0) {
-        #         Write-Output "$($result.FilePath): $($result.Hash)"
-        #         $snapshot = Split-Path $result.filePath -Leaf
-        #         $dhash = $result.Hash.ToString()
-        #         Write-Output "#################################################"
-        #         Write-Output "Data disk - Put hash value in the Key Vault"
-        #         Write-Output "#################################################"
-        #         $Secret = ConvertTo-SecureString -String $dhash -AsPlainText -Force
-        #         Set-AzKeyVaultSecret -VaultName $destKV -Name "$snapshot-hash-$($HashAlgorithm.toUpper())" -SecretValue $Secret -ContentType "text/plain"
-        #         $targetStorageContextFile = (Get-AzStorageAccount -ResourceGroupName $destRGName -Name $destSAfile).Context
-        #         Remove-AzStorageFile -ShareName $destTempShare -Path $snapshot -Context $targetStorageContextFile
-        #     }
-        # }
-
         $sw.Stop()
         Write-Output "Elapsed time: $($sw.Elapsed.TotalMinutes)  minutes" 
 
@@ -475,9 +457,13 @@ if ($bios) {
 
     # Output the job elapsed time
     $swGlobal.Stop()
-    Write-Output "#####################################################"
+    Write-Output "########################################################################"
     Write-Output "Operation completed."
     Write-Output "Elapsed time for the entire operation: $($swGlobal.Elapsed.TotalMinutes) minutes"
+    Write-Output 
+    Write-Output "NOTE: $snapshotPrefix is the prefix used for:  "
+    Write-Output "  - the digital evidences stored in the SOC Storage Account ($destSAblob)" 
+    Write-Output "  - the secrets (hash and BEK) stored in the SOC Key Vault ($destKV)"
     Write-Output "########################################################################"
 
 }
