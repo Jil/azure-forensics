@@ -56,6 +56,7 @@ The SOC resource group contains:
     1. a blob container named *immutable* automatically configured with the [Legal Hold](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-immutability-policies-overview) feature
     1. a file share named *hash* used for calculating digital evidence hashes.
 1. A **key vault** for storing, in the SOC environment, a copy of the BEK keys and the hash of the digital evidence processed.
+1. A **Log Analytics Workspace** for storing the logs of the Azure resources involved in the Chain of Custody process.
 1. An **automation account** configured with:
     1. A RunBook implementing the Chain of Custody process as outlined in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
     1. Variables for the RunBook, automatically populated with SOC environment values.
@@ -80,7 +81,7 @@ Once the job concludes, examine the job's Output to verify successful completion
 
 ![Screenshot of a completed job](./.diagrams/JobCompleted_Out.jpg)
 
-The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 31st August 2023 at 11:31 will be *202308311131_*.  
+The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 31st August 2023 at 11:31 AM will be *202308311131_*.  
 The digital evidence is stored in the *immutable* blob container of the storage account in the SOC resource group and can be downloaded for inspection.
 > [!NOTE]
 > Add your IP address to both the Key Vault firewall and the Storage Account firewall.
@@ -91,7 +92,7 @@ The hash of the digital evidence is stored in the Key Vault of the SOC stored wi
 After downloading digital evidence, recalculate the hash for comparison with the KeyVault-stored hash to verify integrity.
 
 > [!NOTE]
-> The [Appendixes](#appendixes---hash-utility) section below provides a PowerShell script to recalculate the hash of the digital evidence.
+> The [Appendix](#hash-utility) section below provides a PowerShell script to recalculate the hash of the digital evidence.
 
 For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the section below.
 
@@ -151,12 +152,16 @@ To unlock an Azure data disk and mount it under the directory `datadisk`:
 After the script execution, you will be prompted for the encryption passphrase. Copy it from the script output to unlock and access the content of the Azure data disk.
 
 ## Remove the LAB environment
+
 To remove the LAB environment, delete the resource groups created for the Production and SOC environments. Please note that to delete the SOC resource group, you must first allow your IP address through the Firewall of the storage account and delete the Legal Hold Access Policy from the *immutable* container in the storage account as shown in the screenshots below.
 ![Screenshot of the Firewall update](./.diagrams/SA_Firewall.jpg)
 ![Screenshot of the Legal Hold Access Policy selection](./.diagrams/LegalHold_Select.jpg)
 ![Screenshot of the Legal Hold Access Policy deletion](./.diagrams/LegalHold_Delete.jpg)
 
-## Appendixes - Hash utility
+## Appendixes
+
+### Hash utility
+
 The provided  [zip file](https://github.com/fabmas/coc/raw/main/.utilities/Hash.zip) can be utilized to recalculate the hash file. It includes a PowerShell script and the corresponding DLL.
 
 Run the *hash.ps1* Powershell script providing the following parameters:
@@ -168,3 +173,33 @@ This is a sample command to calculate the MD5 hash of 3 files:
 ```powershell
 .\hash.ps1 -FileList "C:\temp\osdisk.vhd", "C:\temp\datadisk-00.vhd" ,"C:\temp\datadisk-01.vhd" -HashAlgorithm MD5   
 ```
+
+### RunBook description
+
+The following section describes the actions performed by the RunBook for further understanding of the process and troubleshooting.
+
+The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.runbook/Copy-VmDigitalEvidenceWin_v21.ps1) which performs the  actions described below.
+
+1. Receives in input the subscription ID, the resource group name, and the virtual machine name of the virtual machine to be processed
+1. Receives in input wether to calculate the hash of the digital evidence and the hash algorithm to be used for the calculation (if applicable)
+1. Signs in to Azure with the System Managed Identity of the automation account
+1. Creates temporary snapshots of the virtual machine's OS disk and Data disks
+1. Copies the snapshots to the SOC Azure Blob container named *immutable*
+1. If virtual machine's disks are encrypted with Azure Disk Encryption (ADE), copies the BEK of the disks to the SOC key vault. A secret named with the timestamp of the RunBook execution contains the encryption key and all the tags to identify the disk and volume
+1. If hash calculation is enabled then:
+    a.  copies the snapshots to the SOC Azure file share named *hash*
+    b. Calculates the hash of the snapshots stored on the file share using the specified algorithm
+    c. Stores the calculated hash value into the SOC key vault
+    d. Removes the temporary copy of the snapshot from the SOC Azure file share
+1. Removes all the source snapshots generated during the process
+
+> [!NOTE]
+> The RunBook performs the actions above with the System Managed Identity of the automation account. The identity is granted the necessary permissions to the Production and SOC resource groups during the deployment process of the LAB environment described in this guide. If you wish to implement the complete solution described in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
+, acting through different subscriptions and resource groups, please ensure that the System Managed Identity of the automation account has the following permissions:
+>- *Contributor*: on the resource group of the virtual machine to be processed
+>- *Key Vault Secrets User*: on the Key Vault holding the BEK keys
+>
+>Additionally, if the Key Vault has the firewall enabled, ensure that the public IP address of the Hybrid RunBook Worker VM is allowed through the firewall.
+
+> [!DISCLAIMER]
+> The sample scripts are not supported under any Microsoft standard support program or service. The sample scripts are provided AS IS without warranty of any kind. Microsoft further disclaims all implied warranties including, without limitation, any implied warranties of merchantability or of fitness for a particular purpose. The entire risk arising out of the use or performance of the sample scripts and documentation remains with you. In no event shall Microsoft, its authors, or anyone else involved in the creation, production, or delivery of the scripts be liable for any damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or other pecuniary loss) arising out of the use of or inability to use the sample scripts or documentation, even if Microsoft has been advised of the possibility of such damages.
