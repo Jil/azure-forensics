@@ -16,7 +16,7 @@ To initiate the deployment of the LAB environment, verify to have the *Owner* ro
 |Coc-prod-rg_name |The name of the resource group for the Production environment|CoC-Production|
 |Coc-prod-vnet_name |The name of the virtual network for the Production environment|CoC-Production-vnet|
 |Coc-prod-nsg_name |The name of the network security group for the Production environment|CoC-Production-vnet-server-nsg|
-|Coc-prod-keyvault_name |The name of the key vault for the Production environment|CoC-Production-keyvault-\<UNIQUESTRING>|
+|Coc-prod-keyvault_name |The name of the key vault for the Production environment|CoC-Production-KV-\<UNIQUESTRING>|
 |Coc-prod-VM01_name |The name of the VM for the Production environment|CoC-Prod-VM01|
 |Coc-prod-VM01_adminUsername |The name of the admin user for the VM for the Production environment|cocprodadmin|
 |Coc-prod-VM01_adminPassword|The password of the admin user for the VM for the Production environment||
@@ -24,9 +24,9 @@ To initiate the deployment of the LAB environment, verify to have the *Owner* ro
 |Coc-soc-rg_name |The name of the resource group for the SOC environment|CoC-SOC|
 |Coc-soc-vnet_name |The name of the virtual network for the SOC environment|CoC-SOC-vnet|
 |Coc-soc-nsg_name |The name of the network security group for the SOC environment|CoC-SOC-vnet-soc-subnet01-nsg|
-|Coc-soc-keyvault_name |The name of the key vault for the SOC environment|CoC-SOC-keyvault-\<UNIQUESTRING>|
+|Coc-soc-keyvault_name |The name of the key vault for the SOC environment|CoC-SOC-KV-\<UNIQUESTRING>|
 |Coc-soc-storageAccount_name |The name of the storage account for the SOC environment|cocsocstorage-\<UNIQUESTRING>|
-|Coc-soc-LogAnWks_name |The name of the Log Analytics Workspace for the SOC environment|CoC-SOC-LogAnWks-\<UNIQUESTRING>|
+|Coc-soc-LogAnWks_name |The name of the Log Analytics Workspace for the SOC environment|CoC-SOC-LA-\<UNIQUESTRING>|
 |Coc-soc-automatioAccount_name |The name of the automation account for the SOC environment|CoC-SOC-AutomationAcct|
 |CoC-SOC-workerGroup_name|The name of the Hybrid Worker Group for the SOC environment|CoC-HRW-Windows|
 |Coc-soc-HRW_VM_name |The name of the Hybrid RunBook Worker VM for the SOC environment|CoC-SOC-HRW|
@@ -80,20 +80,75 @@ Once the job concludes, examine the job's Output to verify successful completion
 
 ![Screenshot of a completed job](./.diagrams/JobCompleted_Out.jpg)
 
-The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 8th August 2023 at 14:30 UTC will be *202308081430_*.  
-The digital evidence is stored in the *immutable* blob container of the storage account in the SOC resource group and can be downloaded for inspection. 
+The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 31st August 2023 at 11:31 will be *202308311131_*.  
+The digital evidence is stored in the *immutable* blob container of the storage account in the SOC resource group and can be downloaded for inspection.
 > [!NOTE]
 > Add your IP address to both the Key Vault firewall and the Storage Account firewall.
 
 ![Screenshot of the immutable container](./.diagrams/JobCompleted_SA.jpg)
-The hash of the digital evidence is stored in the Key Vault of the SOC stored with the same name of the digital evidence followed by the suffix "-hash" and the algorithm used. The BEK keys are stored in the key vault of the SOC with the name of the digital evidence.
+The hash of the digital evidence is stored in the Key Vault of the SOC stored with the same name of the digital evidence followed by the suffix "-hash" and the algorithm used. The BEK secrets are stored in the key vault of the SOC with the name of the digital evidence. 
 ![Screenshot of the Key Vault](./.diagrams/JobCompleted_KV.jpg)
 After downloading digital evidence, recalculate the hash for comparison with the KeyVault-stored hash to verify integrity.
 
 > [!NOTE]
 > The [Appendixes](#appendixes---hash-utility) section below provides a PowerShell script to recalculate the hash of the digital evidence.
 
-For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/#evidence-retrieval).
+For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the section below.
+
+> [!NOTE]
+> As the VM deployed in this LAB environment is a Windows Server, you can follow the instructions provided in the [Windows disk unlock](#windows-disks-unlock) section. If you wish to extend the LAB with a Linux VM that has ADE enabled, the [Linux disk unlock](#linux-disks-unlock) section  provides detailed steps for digital evidence decryption on Linux.
+The sections assume that the optional KEK encryption is not used to wrap the BEK. For more information on how to unlock an encrypted disk for offline repair, please refer to https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/unlock-encrypted-disk-offline
+
+#### Windows disks unlock
+
+The Azure Windows data disk is locked by BitLocker. Once the disk is attached on a Windows machine the content is not readable, until it's unlocked.
+
+To unlock an Azure data disk connected, for example, on G:\ execute below actions:
+
+1. Open the SOC key vault, and search the secret containing the BEK of the disk. The secret is named with the timestamp prefix shown in the output of the RunBook execution
+![Screenshot of the BEK secret](./.diagrams/JobCompleted_KV_BEKSecret.jpg)
+1. Copy the BEK secret value and paste it into the `$bekSecretBase64` variable in the following PowerShell script. Paste the value of the `DiskEncryptionKeyFileName` tag associated to the secret into the `$fileName` variable
+1. Run the script
+
+    ```powershell
+    $bekSecretbase64="<paste the BEK string here>"
+    $fileName="<paste the DiskEncryptionKeyFileName tag value here>"
+
+    $bekFileBytes = [Convert]::FromBase64String($bekSecretbase64)
+    $path = "C:\BEK\$fileName"
+    [System.IO.File]::WriteAllBytes($path,$bekFileBytes)
+
+    manage-bde -unlock G: -rk $path
+    ```
+
+#### Linux disks unlock
+
+The Azure Linux data disk is locked by DM-Crypt. The content of the disk is not accessible until the disk is unlocked.
+
+To unlock an Azure data disk and mount it under the directory `datadisk`:
+
+1. Open the SOC key vault, and search the secret containing the BEK of the disk. The secret is named with the timestamp prefix shown in the output of the RunBook execution
+1. Copy the BEK string and paste it into the `bekSecretBase64` variable in the following bash script
+1. Run the script
+
+    ```bash
+   #!/bin/bash
+
+   bekSecretbase64="<paste the BEK string here>"
+   mountname="datadisk"
+   device=$(blkid -t TYPE=crypto_LUKS -o device)
+   passphrase="$(base64 -d <<< $bekSecretbase64)"
+
+   echo "Passphrase: " $passphrase
+
+   if [ ! -d "${mountname:+$mountname/}" ]; then
+    mkdir $mountname
+   fi
+
+   cryptsetup open $device $mountname
+    ```
+
+After the script execution, you will be prompted for the encryption passphrase. Copy it from the script output to unlock and access the content of the Azure data disk.
 
 ## Remove the LAB environment
 To remove the LAB environment, delete the resource groups created for the Production and SOC environments. Please note that to delete the SOC resource group, you must first allow your IP address through the Firewall of the storage account and delete the Legal Hold Access Policy from the *immutable* container in the storage account as shown in the screenshots below.
