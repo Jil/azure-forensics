@@ -102,9 +102,9 @@ The sections assume that the optional KEK encryption is not used to wrap the BEK
 
 #### Windows disks unlock
 
-The Azure Windows data disk is locked by BitLocker. Once the disk is attached on a Windows machine the content is not readable, until it's unlocked.
+The Azure Windows disks are locked by BitLocker. Once the disk is attached on a Windows machine the content is not readable, until it's unlocked.
 
-To unlock an Azure data disk connected, for example, on G:\ execute below actions:
+To unlock an Azure disk connected, for example, on G:\ execute below actions:
 
 1. Open the SOC key vault, and search the secret containing the BEK of the disk. The secret is named with the timestamp prefix shown in the output of the RunBook execution
 ![Screenshot of the BEK secret](./.diagrams/JobCompleted_KV_BEKSecret.jpg)
@@ -124,9 +124,9 @@ To unlock an Azure data disk connected, for example, on G:\ execute below action
 
 #### Linux disks unlock
 
-The Azure Linux data disk is locked by DM-Crypt. The content of the disk is not accessible until the disk is unlocked.
+The Azure Linux disks are locked by DM-Crypt. The content of the disk is not accessible until the disk is unlocked.
 
-To unlock an Azure data disk and mount it under the directory `datadisk`:
+To unlock an Azure disk and mount it under the directory `datadisk`:
 
 1. Open the SOC key vault, and search the secret containing the BEK of the disk. The secret is named with the timestamp prefix shown in the output of the RunBook execution
 1. Copy the BEK string and paste it into the `bekSecretBase64` variable in the following bash script
