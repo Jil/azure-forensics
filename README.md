@@ -186,7 +186,7 @@ The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.
 1. Creates temporary snapshots of the virtual machine's OS disk and Data disks
 1. Copies the snapshots to the SOC Azure Blob container named *immutable*
 1. If virtual machine's disks are encrypted with Azure Disk Encryption (ADE), copies the BEK of the disks to the SOC key vault. A secret named with the timestamp of the RunBook execution contains the encryption key and all the tags to identify the disk and volume
-1. If hash calculation is enabled then:
+1. If hash calculation is requested then:
     a.  copies the snapshots to the SOC Azure file share named *hash*
     b. Calculates the hash of the snapshots stored on the file share using the specified algorithm
     c. Stores the calculated hash value into the SOC key vault
