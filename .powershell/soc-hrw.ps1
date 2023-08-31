@@ -8,7 +8,12 @@ param (
     # The Principal ID of the HRW system identity
     [Parameter(Mandatory = $true)]
     [string]
-    $HRWIdentity 
+    $HRWIdentity,
+
+    # The Principal ID of the HRW system identity
+    [Parameter(Mandatory = $true)]
+    [string]
+    $regionCode
 
 )
 
@@ -82,6 +87,42 @@ $setLegalHoldPolicy = Invoke-WebRequest -Uri $Uri -Headers $Header -Method 'POST
 
 Write-Output $setLegalHoldPolicy
 Write-Host $setLegalHoldPolicy
+
+# Set the correct time zone based on the location of the HRW
+
+$regionTable = @{
+    "eastus" = "Eastern Standard Time"
+    "eastus2" = "Eastern Standard Time"
+    "southcentralus" = "Central Standard Time"
+    "westus2" = "Pacific Standard Time"
+    "westus3" = "Pacific Standard Time"
+    "australiaeast" = "AUS Eastern Standard Time"
+    "southeastasia" = "Singapore Standard Time"
+    "northeurope" = "W. Europe Standard Time"
+    "swedencentral" = "W. Europe Standard Time"
+    "uksouth" = "GMT Standard Time"
+    "westeurope" = "W. Europe Standard Time"
+    "centralus" = "Central Standard Time"
+    "southafricanorth" = "South Africa Standard Time"
+    "centralindia" = "India Standard Time"
+    "eastasia" = "Tokyo Standard Time"
+    "japaneast" = "Tokyo Standard Time"
+    "koreacentral" = "Korea Standard Time"
+    "canadacentral" = "Central Standard Time"
+    "francecentral" = 	"W. Europe Standard Time"
+    "germanywestcentral" = 	"W. Europe Standard Time"
+    "norwayeast" = 	"W. Europe Standard Time"
+    "switzerlandnorth" = 	"W. Europe Standard Time"
+    "uaenorth" = 	"Arabian Standard Time"
+}
+
+$timezoneName = $regionTable[$regionCode]
+if ($timezoneName -eq $null) {
+    Write-Host ("Region code {0} not found." -f $regionCode)
+} else {
+    Write-Host ("Setting time zone to {0}." -f $timezoneName)
+    Set-TimeZone -Name $timezoneName
+}
 
 # Remove the Hybrid Runbook system identity from the Owner role assigned to the storage account
 Start-Sleep -s 30
