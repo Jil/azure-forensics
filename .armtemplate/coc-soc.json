@@ -9,41 +9,61 @@
             "defaultValue": "westeurope",
             "type": "string"
         },
-        "virtualMachines_CoC_HRW_VM_name": {
-            "metadata": {
-                "description": "Name of the Hybrid Runbook Worker VM resource for the SOC"
-            },
-            "type": "String"
-        },
         "virtualNetworks_CoC_SOC_vnet_name": {
             "metadata": {
                 "description": "Name of the VNET resource for the SOC"
             },
+            "type": "String",
+            "defaultValue": "CoC-SOC-vnet"
+        },
+        "networkSecurityGroups_nsg_name": {
+            "metadata": {
+                "description": "Name of the NSG resource for the SOC"
+            },
+            "defaultValue": "CoC-SOC-vnet-soc-subnet01-nsg",
             "type": "String"
         },
         "vaults_CoC_SOC_keyvault_name": {
             "metadata": {
                 "description": "UNIQUE name of the Key Vault resource for the SOC"
             },
-            "type": "String"
+            "type": "String",
+            "defaultValue": "CoC-SOC-KV-<UNIQUESTRING>"
         },
         "storageAccounts_cocsocstorageacct_name": {
             "metadata": {
                 "description": "UNIQUE name of the Storage Account resource for the SOC"
             },
-            "type": "String"
+            "type": "String",
+            "defaultValue": "cocsocstorage<UNIQUESTRING>"
         },
         "workspaces_CoC_SOC_LogAnWks_name": {
             "metadata": {
                 "description": "UNIQUE name of the Log Analytics Workspace resource for the SOC"
             },
-            "type": "String"
+            "type": "String",
+            "defaultValue": "CoC-SOC-LA-<UNIQUESTRING>"
         },
         "automationAccounts_CoC_SOC_Automation_name": {
             "metadata": {
                 "description": "Name of the Automation Account resource for the SOC"
             },
-            "type": "String"
+            "type": "String",
+            "defaultValue": "CoC-SOC-AutomationAcct"
+        },
+        "workerGroupName": {
+            "metadata": {
+                "description": "Name of the Hybrid Runbook Worker Group"
+            },
+            "defaultValue": "CoC-HRW-Windows",
+            "type": "string"
+        },
+        "virtualMachines_CoC_HRW_VM_name": {
+            "metadata": {
+                "description": "Name of the Hybrid Runbook Worker VM resource for the SOC"
+            },
+            "type": "String",
+            "defaultValue": "CoC-SOC-HRW"
         },
         "adminUsername": {
             "metadata": {
@@ -58,20 +78,7 @@
             },
             "type": "secureString"
         },
-        "networkSecurityGroups_nsg_name": {
-            "metadata": {
-                "description": "Name of the NSG resource for the SOC"
-            },
-            "defaultValue": "nsg",
-            "type": "String"
-        },
-        "workerGroupName": {
-            "metadata": {
-                "description": "Name of the Hybrid Runbook Worker Group"
-            },
-            "defaultValue": "CoC-HRW-Windows",
-            "type": "string"
-        },
+
 
         "storage_Account_Type": {
             "metadata": {
