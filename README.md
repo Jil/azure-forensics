@@ -176,27 +176,26 @@ This is a sample command to calculate the MD5 hash of 3 files:
 
 ### RunBook description
 
-The following section describes the actions performed by the RunBook for further understanding of the CoC process and troubleshooting.
+This section explains the actions that the RunBook performs to help you understand the CoC process and troubleshoot any issues.
 
-The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.runbook/Copy-VmDigitalEvidenceWin_v21.ps1) which performs the  actions described below.
+The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.runbook/Copy-VmDigitalEvidenceWin_v21.ps1) which does the following:
 
-1. Receives in input the subscription ID, the resource group name, and the virtual machine name of the virtual machine to be processed
-1. Receives in input wether to calculate the hash of the digital evidence and the hash algorithm to be used for the calculation (if applicable)
+1. Takes the subscription ID, the resource group name, and the virtual machine name of the VM to be processed as input parameters
+1. Takes a boolean parameter to indicate whether to calculate the hash of the digital evidence and a string parameter to specify the hash algorithm to use (if applicable)
 1. Reads information about the SOC environment stored in the Automation Account variables
 1. Signs in to Azure with the System Managed Identity of the automation account
-1. Creates temporary snapshots of the virtual machine's OS disk and Data disks
+1. Creates temporary snapshots of the OS disk and Data disks of the virtual machine
 1. Copies the snapshots to the SOC Azure Blob container named *immutable*
-1. If virtual machine's disks are encrypted with Azure Disk Encryption (ADE), copies the BEK of the disks to the SOC key vault. A secret named with the timestamp of the RunBook execution contains the encryption key and all the tags to identify the disk and volume
+1. If virtual machine's disks are encrypted with Azure Disk Encryption (ADE), copies the BEK keys of the disks to the SOC key vault. A secret named with the timestamp of the RunBook execution contains the encryption key and all the tags to identify the disk and volume
 1. If hash calculation is requested then:
     a. Copies the snapshots to the SOC Azure file share named *hash*
     b. Calculates the hash of the snapshots stored on the file share using the specified algorithm
     c. Stores the calculated hash value into the SOC key vault
     d. Removes the temporary copy of the snapshot from the SOC Azure file share
-1. Removes all the source snapshots generated during the process
+1. Deletes all the source snapshots generated during the process
 
 > [!NOTE]
-> The RunBook performs the actions above with the System Managed Identity of the automation account. The identity is granted the necessary permissions to the Production and SOC resource groups during the deployment process of the LAB environment described in this guide. If you wish to implement the complete solution described in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
-, acting through different subscriptions and resource groups, please ensure that the System Managed Identity of the automation account has the following permissions:
+> The RunBook performs the actions above with the System Managed Identity of the automation account. The identity has been granted the necessary permissions to access both Production and SOC resource groups during deployment process of LAB environment described in this guide. If you want to implement complete solution described in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/), using different subscriptions and resource groups, please make sure that System Managed Identity of automation account has following permissions:
 >- *Contributor*: on the resource group of the virtual machine to be processed
 >- *Key Vault Secrets User*: on the Key Vault holding the BEK keys
 >
