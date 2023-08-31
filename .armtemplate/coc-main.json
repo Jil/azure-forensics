@@ -103,7 +103,7 @@
             "description": "UNIQUE name of the Log Analytics Workspace resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-LogAnWks-<UNIQUESTRING>"
+        "defaultValue": "CoC-SOC-LA-<UNIQUESTRING>"
     },
     "coc-soc-automationAccount_name": {
         "metadata": {
