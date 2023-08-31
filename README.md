@@ -72,7 +72,7 @@ Access the automation account within the SOC resource group and navigate to the 
 |RESOURCEGROUPNAME|The name of the Production resource group|CoC-Production|
 |VIRTUALMACHINENAME|The name of the VM in the Production resource group|CoC-Prod-VM01|
 |CALCULATEHASH|If true the RunBook will calculate the hash of the digital evidence. Supported values are TRUE or FALSE| TRUE|
-|HASHALGORITHM|The algorithm used to calculate the hash of the digital evidence. Supported Values are MD5, SHA256, SKEIN, KECCAK (or SHA3)|SHA256|
+|HASHALGORITHM|The algorithm used to calculate the hash of the digital evidence. Supported Values are MD5, SHA256, SKEIN, KECCAK (or SHA3)|SHA3|
 
 > [!NOTE]
 > The RunBook applied to the LAB's deployed VM will take around 45 minutes to complete (or 15 minutes without hash calculation). Completion time depends on attached disk sizes. Hash calculation is time-intensive, executed via parallel jobs for faster processing across all disks.
@@ -84,7 +84,7 @@ Once the job concludes, examine the job's Output to verify successful completion
 The output shows the name of the digital evidence composed by a timestamp prefix followed by the name of the disk. For example the prefix for a job started on 31st August 2023 at 11:31 AM will be *202308311131_*.  
 The digital evidence is stored in the *immutable* blob container of the storage account in the SOC resource group and can be downloaded for inspection.
 > [!NOTE]
-> Add your IP address to both the Key Vault firewall and the Storage Account firewall.
+> Add your IP address to both the Key Vault firewall and the Storage Account firewall defined in the SOC resource group.
 
 ![Screenshot of the immutable container](./.diagrams/JobCompleted_SA.jpg)
 The hash of the digital evidence is stored in the Key Vault of the SOC stored with the same name of the digital evidence followed by the suffix "-hash" and the algorithm used. The BEK secrets are stored in the key vault of the SOC with the name of the digital evidence. 
