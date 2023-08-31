@@ -94,7 +94,7 @@ After downloading digital evidence, recalculate the hash for comparison with the
 > [!NOTE]
 > The [Appendix](#hash-utility) section below provides a PowerShell script to recalculate the hash of the digital evidence.
 
-For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the section below.
+For digital evidence decryption, get the BEK keys from the SOC environment's Key Vault and follow instructions outlined in the [section](#windows-disks-unlock) below.
 
 > [!NOTE]
 > As the VM deployed in this LAB environment is a Windows Server, you can follow the instructions provided in the [Windows disk unlock](#windows-disks-unlock) section. If you wish to extend the LAB with a Linux VM that has ADE enabled, the [Linux disk unlock](#linux-disks-unlock) section  provides detailed steps for digital evidence decryption on Linux.
