@@ -176,18 +176,19 @@ This is a sample command to calculate the MD5 hash of 3 files:
 
 ### RunBook description
 
-The following section describes the actions performed by the RunBook for further understanding of the process and troubleshooting.
+The following section describes the actions performed by the RunBook for further understanding of the CoC process and troubleshooting.
 
 The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.runbook/Copy-VmDigitalEvidenceWin_v21.ps1) which performs the  actions described below.
 
 1. Receives in input the subscription ID, the resource group name, and the virtual machine name of the virtual machine to be processed
 1. Receives in input wether to calculate the hash of the digital evidence and the hash algorithm to be used for the calculation (if applicable)
+1. Reads information about the SOC environment stored in the Automation Account variables
 1. Signs in to Azure with the System Managed Identity of the automation account
 1. Creates temporary snapshots of the virtual machine's OS disk and Data disks
 1. Copies the snapshots to the SOC Azure Blob container named *immutable*
 1. If virtual machine's disks are encrypted with Azure Disk Encryption (ADE), copies the BEK of the disks to the SOC key vault. A secret named with the timestamp of the RunBook execution contains the encryption key and all the tags to identify the disk and volume
 1. If hash calculation is requested then:
-    a.  copies the snapshots to the SOC Azure file share named *hash*
+    a. Copies the snapshots to the SOC Azure file share named *hash*
     b. Calculates the hash of the snapshots stored on the file share using the specified algorithm
     c. Stores the calculated hash value into the SOC key vault
     d. Removes the temporary copy of the snapshot from the SOC Azure file share
