@@ -213,7 +213,7 @@
           "contentVersion": "1.0.0.0"
         },
       "parameters": {
-          "location": {
+          "coc-soc-location": {
               "value": "[reference(resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-prod-rg_name')),'2019-10-01','Full').location]"
           },
           "coc-soc-HRW_VM_name": {
