@@ -9,85 +9,56 @@
             "defaultValue": "westeurope",
             "type": "string"
         },
-        "virtualNetworks_CoC_SOC_vnet_name": {
+        "coc-soc-vnet_name": {
             "metadata": {
                 "description": "Name of the VNET resource for the SOC"
             },
             "type": "String",
             "defaultValue": "CoC-SOC-vnet"
         },
-        "networkSecurityGroups_nsg_name": {
+        "coc-soc-nsg_name": {
             "metadata": {
                 "description": "Name of the NSG resource for the SOC"
             },
             "defaultValue": "CoC-SOC-vnet-soc-subnet01-nsg",
             "type": "String"
         },
-        "vaults_CoC_SOC_keyvault_name": {
+        "coc-soc-keyvault_name": {
             "metadata": {
                 "description": "UNIQUE name of the Key Vault resource for the SOC"
             },
             "type": "String",
             "defaultValue": "CoC-SOC-KV-<UNIQUESTRING>"
         },
-        "storageAccounts_cocsocstorageacct_name": {
+        "coc-soc-storageAccount_name": {
             "metadata": {
                 "description": "UNIQUE name of the Storage Account resource for the SOC"
             },
             "type": "String",
             "defaultValue": "cocsocstorage<UNIQUESTRING>"
         },
-        "workspaces_CoC_SOC_LogAnWks_name": {
+        "coc-soc-storageAccount_Type": {
+            "metadata": {
+                "description": "Storage Account Type"
+            },
+            "defaultValue": "StandardSSD_LRS",
+            "type": "string"
+        },
+        "coc-soc-LogAnWks_name": {
             "metadata": {
                 "description": "UNIQUE name of the Log Analytics Workspace resource for the SOC"
             },
             "type": "String",
             "defaultValue": "CoC-SOC-LA-<UNIQUESTRING>"
         },
-        "automationAccounts_CoC_SOC_Automation_name": {
+        "coc-soc-automationAccount_name": {
             "metadata": {
                 "description": "Name of the Automation Account resource for the SOC"
             },
             "type": "String",
-            "defaultValue": "CoC-SOC-AutomationAcct"
+            "defaultValue": "CoC-SOC-AA-LA-<UNIQUESTRING>"
         },
-        "workerGroupName": {
-            "metadata": {
-                "description": "Name of the Hybrid Runbook Worker Group"
-            },
-            "defaultValue": "CoC-HRW-Windows",
-            "type": "string"
-        },
-        "virtualMachines_CoC_HRW_VM_name": {
-            "metadata": {
-                "description": "Name of the Hybrid Runbook Worker VM resource for the SOC"
-            },
-            "type": "String",
-            "defaultValue": "CoC-SOC-HRW"
-        },
-        "adminUsername": {
-            "metadata": {
-                "description": "Admin username for the Hybrid Runbook Worker VM"
-            },
-            "defaultValue": "cocsocadmin",
-            "type": "string"
-        },
-        "adminPassword": {
-            "metadata": {
-                "description": "Admin password for the Hybrid Runbook Worker VM"
-            },
-            "type": "secureString"
-        },
-
-
-        "storage_Account_Type": {
-            "metadata": {
-                "description": "Storage Account Type"
-            },
-            "defaultValue": "Premium_LRS",
-            "type": "string"
-        },
-        "createWorkerGroup": {
+        "coc-soc-createWorkerGroup": {
             "metadata": {
                 "description": "Create Hybrid Runbook Worker Group"
             },
@@ -98,6 +69,37 @@
                 "yes"
             ]
         },
+        "coc-soc-workerGroupName": {
+            "metadata": {
+                "description": "Name of the Hybrid Runbook Worker Group"
+            },
+            "defaultValue": "CoC-HRW-Windows",
+            "type": "string"
+        },
+        "coc-soc-HRW_VM_name": {
+            "metadata": {
+                "description": "Name of the Hybrid Runbook Worker VM resource for the SOC"
+            },
+            "type": "String",
+            "defaultValue": "CoC-SOC-HRW"
+        },
+        "coc-soc-HRW_adminUsername": {
+            "metadata": {
+                "description": "Admin username for the Hybrid Runbook Worker VM"
+            },
+            "defaultValue": "cocsocadmin",
+            "type": "string"
+        },
+        "coc-soc-HRW_adminPassword": {
+            "metadata": {
+                "description": "Admin password for the Hybrid Runbook Worker VM"
+            },
+            "type": "secureString"
+        },
+
+
+
+
         "_CurrentDateTimeInTicks": {
             "metadata": {
                 "description": "Current date time in ticks used for unique variables"
@@ -108,15 +110,15 @@
     },
     "variables": {
         "UniqueStringBasedOnTimeStamp": "[uniqueString(deployment().name, parameters('_CurrentDateTimeInTicks'))]",
-        "networkInterfaces_coc_hrw_nic_name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'), '-nic')]",
-        "publicIPAddresses_CoC_HRW_VM_ip_name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'), '-pip')]"
+        "networkInterfaces_coc_hrw_nic_name": "[concat(parameters('coc-soc-HRW_VM_name'), '-nic')]",
+        "publicIPAddresses_CoC_HRW_VM_ip_name": "[concat(parameters('coc-soc-HRW_VM_name'), '-pip')]"
     },
     "resources": [
         {
             "type": "Microsoft.Automation/automationAccounts",
-            "condition": "[equals(parameters('createWorkerGroup'),'yes')]",
+            "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
             "apiVersion": "2022-08-08",
-            "name": "[parameters('automationAccounts_CoC_SOC_Automation_name')]",
+            "name": "[parameters('coc-soc-automationAccount_name')]",
             "location": "[parameters('location')]",
             "identity": {
                 "type": "SystemAssigned"
@@ -134,27 +136,27 @@
             },
             "resources": [
                 {
-                "name": "[parameters('workerGroupName')]",
-                "condition": "[equals(parameters('createWorkerGroup'),'yes')]",
+                "name": "[parameters('coc-soc-workerGroupName')]",
+                "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
                 "type": "hybridRunbookWorkerGroups",
                 "apiVersion": "2022-02-22",
                 "dependsOn": [
-                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                    "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                    "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
                 ],
                 "resources" : [
                     {
                     "name": "[guid('testhw', variables('UniqueStringBasedOnTimeStamp'))]",
-                    "condition": "[equals(parameters('createWorkerGroup'),'yes')]",
+                    "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
                     "type": "hybridRunbookWorkers",
                     "apiVersion": "2021-06-22",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                        "[resourceId('Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups', parameters('automationAccounts_CoC_SOC_Automation_name'),parameters('workerGroupName'))]",
-                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups', parameters('coc-soc-automationAccount_name'),parameters('coc-soc-workerGroupName'))]",
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
                     ],
                     "properties": {
-                        "vmResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                        "vmResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
                     }
                     }
                 ]
@@ -163,9 +165,9 @@
         },
         {
             "type": "Microsoft.Automation/automationAccounts",
-            "condition": "[equals(parameters('createWorkerGroup'),'no')]",
+            "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'no')]",
             "apiVersion": "2022-08-08",
-            "name": "[parameters('automationAccounts_CoC_SOC_Automation_name')]",
+            "name": "[parameters('coc-soc-automationAccount_name')]",
             "location": "[parameters('location')]",
             "identity": {
                 "type": "SystemAssigned"
@@ -186,24 +188,24 @@
         {
             "type": "Microsoft.Automation/automationAccounts/variables",
             "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('automationAccounts_CoC_SOC_Automation_name'), '/destKV')]",
+            "name": "[concat(parameters('coc-soc-automationAccount_name'), '/destKV')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "isEncrypted": false,
-                "value": "[concat('\"',parameters('vaults_CoC_SOC_keyvault_name'),'\"')]",
+                "value": "[concat('\"',parameters('coc-soc-keyvault_name'),'\"')]",
                 "description": "The name of the keyvault to store a copy of the BEK in the dest subscription"
             }
         },
         {
             "type": "Microsoft.Automation/automationAccounts/variables",
             "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('automationAccounts_CoC_SOC_Automation_name'), '/destRGName')]",
+            "name": "[concat(parameters('coc-soc-automationAccount_name'), '/destRGName')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "isEncrypted": false,
@@ -214,38 +216,38 @@
         {
             "type": "Microsoft.Automation/automationAccounts/variables",
             "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('automationAccounts_CoC_SOC_Automation_name'), '/destSAblob')]",
+            "name": "[concat(parameters('coc-soc-automationAccount_name'), '/destSAblob')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "isEncrypted": false,
-                "value": "[concat('\"',parameters('storageAccounts_cocsocstorageacct_name'),'\"')]",
+                "value": "[concat('\"',parameters('coc-soc-storageAccount_name'),'\"')]",
                 "description": "The name of the storage account for BLOB"
             }
         },
         {
             "type": "Microsoft.Automation/automationAccounts/variables",
             "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('automationAccounts_CoC_SOC_Automation_name'), '/destSAfile')]",
+            "name": "[concat(parameters('coc-soc-automationAccount_name'), '/destSAfile')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "isEncrypted": false,
-                "value": "[concat('\"',parameters('storageAccounts_cocsocstorageacct_name'),'\"')]",
+                "value": "[concat('\"',parameters('coc-soc-storageAccount_name'),'\"')]",
                 "description": "The name of the storage account for FILE"
             }
         },
         {
             "type": "Microsoft.Automation/automationAccounts/variables",
             "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('automationAccounts_CoC_SOC_Automation_name'), '/destSubId')]",
+            "name": "[concat(parameters('coc-soc-automationAccount_name'), '/destSubId')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "isEncrypted": false,
@@ -256,13 +258,13 @@
 
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "condition": "[equals(parameters('createWorkerGroup'),'yes')]",
-            "name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'),'/HybridWorkerExtension')]",
+            "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
+            "name": "[concat(parameters('coc-soc-HRW_VM_name'),'/HybridWorkerExtension')]",
             "apiVersion": "2022-03-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "publisher": "Microsoft.Azure.Automation.HybridWorker",
@@ -271,7 +273,7 @@
                 "autoUpgradeMinorVersion": true,
                 "enableAutomaticUpgrade": true,
                 "settings": {
-                "AutomationAccountURL": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))).AutomationHybridServiceUrl]"
+                "AutomationAccountURL": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))).AutomationHybridServiceUrl]"
                 
                 }
             }
@@ -279,11 +281,11 @@
         {
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2023-02-01",
-            "name": "[parameters('vaults_CoC_SOC_keyvault_name')]",
+            "name": "[parameters('coc-soc-keyvault_name')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_CoC_SOC_vnet_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_CoC_SOC_vnet_name'), 'soc-subnet01')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet01')]"
             ],
             "properties": {
                 "sku": {
@@ -297,7 +299,7 @@
                     "ipRules": [],
                     "virtualNetworkRules": [
                         {
-                            "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_CoC_SOC_vnet_name')), '/subnets/soc-subnet01')]",
+                            "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name')), '/subnets/soc-subnet01')]",
                             "ignoreMissingVnetServiceEndpoint": false
                         }
                     ]
@@ -310,7 +312,7 @@
                 "softDeleteRetentionInDays": 90,
                 "enableRbacAuthorization": true,
                 "enablePurgeProtection": true,
-                "vaultUri": "[concat(concat('https://',parameters('vaults_CoC_SOC_keyvault_name')),'.vault.azure.net/')]",
+                "vaultUri": "[concat(concat('https://',parameters('coc-soc-keyvault_name')),'.vault.azure.net/')]",
                 "provisioningState": "Succeeded",
                 "publicNetworkAccess": "Enabled"
             }
@@ -334,10 +336,10 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('virtualNetworks_CoC_SOC_vnet_name')]",
+            "name": "[parameters('coc-soc-vnet_name')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('coc-soc-nsg_name'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -351,11 +353,11 @@
                 "subnets": [
                     {
                         "name": "soc-subnet01",
-                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_CoC_SOC_vnet_name'), 'soc-subnet01')]",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet01')]",
                         "properties": {
                             "addressPrefix": "172.16.0.0/24",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('coc-soc-nsg_name'))]"
                             },
                             "serviceEndpoints": [
                                 {
@@ -385,7 +387,7 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces",
             "apiVersion": "2021-12-01-preview",
-            "name": "[parameters('workspaces_CoC_SOC_LogAnWks_name')]",
+            "name": "[parameters('coc-soc-LogAnWks_name')]",
             "location": "[parameters('location')]",
             "properties": {
                 "sku": {
@@ -405,10 +407,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2023-01-01",
-            "name": "[parameters('storageAccounts_cocsocstorageacct_name')]",
+            "name": "[parameters('coc-soc-storageAccount_name')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_CoC_SOC_vnet_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_CoC_SOC_vnet_name'), 'soc-subnet01')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet01')]"
             ],
             "location": "[parameters('location')]",
             "sku": {
@@ -429,7 +431,7 @@
                     "bypass": "AzureServices",
                     "virtualNetworkRules":  [
                         {
-                            "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_CoC_SOC_vnet_name')), '/subnets/soc-subnet01')]",
+                            "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name')), '/subnets/soc-subnet01')]",
                             "action": "Allow",
                             "state": "Succeeded"
                         }
@@ -458,11 +460,11 @@
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
             "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('automationAccounts_CoC_SOC_Automation_name'), '/Copy-VmDigitalEvidenceWin')]",
+            "name": "[concat(parameters('coc-soc-automationAccount_name'), '/Copy-VmDigitalEvidenceWin')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "runbookType": "PowerShell",
@@ -479,7 +481,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2023-03-01",
-            "name": "[parameters('virtualMachines_CoC_HRW_VM_name')]",
+            "name": "[parameters('coc-soc-HRW_VM_name')]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_coc_hrw_nic_name'))]"
@@ -500,18 +502,18 @@
                     },
                     "osDisk": {
                         "createOption": "fromImage",
-                        "name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'), '-osdisk')]",
+                        "name": "[concat(parameters('coc-soc-HRW_VM_name'), '-osdisk')]",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('storage_Account_Type')]"
+                            "storageAccountType": "[parameters('coc-soc-storageAccount_Type')]"
                         },
                         "deleteOption": "Delete"
                     },
                     "diskControllerType": "SCSI"
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_CoC_HRW_VM_name')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
+                    "computerName": "[parameters('coc-soc-HRW_VM_name')]",
+                    "adminUsername": "[parameters('coc-soc-HRW_adminUsername')]",
+                    "adminPassword": "[parameters('coc-soc-HRW_adminPassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
@@ -543,11 +545,11 @@
         {
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "apiVersion": "2022-03-01",
-        "name": "[concat(parameters('virtualMachines_CoC_HRW_VM_name'), '/RunPowerShellScript')]",
+        "name": "[concat(parameters('coc-soc-HRW_VM_name'), '/RunPowerShellScript')]",
         "location": "[resourceGroup().location]",
         "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]",
-            "[resourceID('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]",
+            "[resourceID('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
         ],
         "properties": {
             "publisher": "Microsoft.Compute",
@@ -558,7 +560,7 @@
                 "fileUris": [
                     "https://raw.githubusercontent.com/fabmas/coc/main/.powershell/soc-hrw.ps1"
                 ],
-                "commandToExecute": "[concat(' start powershell -ExecutionPolicy Unrestricted -File soc-hrw.ps1 -regionCode ', parameters('location') ,' -StorageAccountResourceID ', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name')), ' -HRWIdentity ', reference(resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name')), '2023-03-01', 'full').identity.principalId)]"
+                "commandToExecute": "[concat(' start powershell -ExecutionPolicy Unrestricted -File soc-hrw.ps1 -regionCode ', parameters('location') ,' -StorageAccountResourceID ', resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name')), ' -HRWIdentity ', reference(resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name')), '2023-03-01', 'full').identity.principalId)]"
             }
         }
         },
@@ -567,15 +569,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2023-04-01",
-            "name": "[concat(parameters('virtualNetworks_CoC_SOC_vnet_name'), '/soc-subnet01')]",
+            "name": "[concat(parameters('coc-soc-vnet_name'), '/soc-subnet01')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_CoC_SOC_vnet_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('coc-soc-nsg_name'))]"
             ],
             "properties": {
                 "addressPrefix": "172.16.0.0/24",
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('coc-soc-nsg_name'))]"
                 },
                 "serviceEndpoints":  [
                     {
@@ -599,9 +601,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2023-01-01",
-            "name": "[concat(parameters('storageAccounts_cocsocstorageacct_name'), '/default')]",
+            "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -632,9 +634,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2023-01-01",
-            "name": "[concat(parameters('storageAccounts_cocsocstorageacct_name'), '/default')]",
+            "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -650,9 +652,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2023-01-01",
-            "name": "[concat(parameters('storageAccounts_cocsocstorageacct_name'), '/default')]",
+            "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -663,9 +665,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/tableServices",
             "apiVersion": "2023-01-01",
-            "name": "[concat(parameters('storageAccounts_cocsocstorageacct_name'), '/default')]",
+            "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -680,7 +682,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_CoC_HRW_VM_ip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_CoC_SOC_vnet_name'), 'soc-subnet01')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet01')]"
             ],
 			"properties": {
                 "ipConfigurations": [
@@ -688,7 +690,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_CoC_SOC_vnet_name'), 'soc-subnet01')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet01')]"
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
@@ -706,10 +708,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2023-01-01",
-            "name": "[concat(parameters('storageAccounts_cocsocstorageacct_name'), '/default/immutable')]",
+            "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default/immutable')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_cocsocstorageacct_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('coc-soc-storageAccount_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -723,10 +725,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
             "apiVersion": "2023-01-01",
-            "name": "[concat(parameters('storageAccounts_cocsocstorageacct_name'), '/default/hash')]",
+            "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default/hash')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_cocsocstorageacct_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('coc-soc-storageAccount_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "properties": {
                 "accessTier": "Hot",
@@ -737,13 +739,13 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('networkSecurityGroups_nsg_name')]",
+            "name": "[parameters('coc-soc-nsg_name')]",
             "location": "[parameters('location')]",
             "properties": {
                 "securityRules": [
                     {
                         "name": "AllowAnyRDPInbound",
-                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_name'), 'AllowAnyRDPInbound')]",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('coc-soc-nsg_name'), 'AllowAnyRDPInbound')]",
                         "type": "Microsoft.Network/networkSecurityGroups/securityRules",
                         "properties": {
                             "protocol": "TCP",
@@ -766,9 +768,9 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2023-04-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_name'), '/AllowAnyRDPInbound')]",
+            "name": "[concat(parameters('coc-soc-nsg_name'), '/AllowAnyRDPInbound')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('coc-soc-nsg_name'))]"
             ],
             "properties": {
                 "protocol": "TCP",
@@ -788,13 +790,13 @@
         {
             "type": "Microsoft.Insights/diagnosticSettings",
              "apiVersion": "2021-05-01-preview",
-              "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_cocsocstorageacct_name'), 'default')]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('coc-soc-storageAccount_name'), 'default')]",
               "name": "diagnostic",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
               "properties": {
-                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_CoC_SOC_LogAnWks_name'))]",
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('coc-soc-LogAnWks_name'))]",
                 "logs": [
                   {
                     "category": "StorageRead",
@@ -814,13 +816,13 @@
         {
             "type": "Microsoft.Insights/diagnosticSettings",
             "apiVersion": "2021-05-01-preview",
-            "scope": "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_cocsocstorageacct_name'), 'default')]",
+            "scope": "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('coc-soc-storageAccount_name'), 'default')]",
             "name": "diagnostic",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]"
             ],
             "properties": {
-              "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_CoC_SOC_LogAnWks_name'))]",
+              "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('coc-soc-LogAnWks_name'))]",
               "logs": [
                 {
                   "category": "StorageRead",
@@ -840,13 +842,13 @@
         {
             "type": "Microsoft.Insights/diagnosticSettings",
             "apiVersion": "2021-05-01-preview",
-            "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_CoC_SOC_keyvault_name'))]",
+            "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('coc-soc-keyvault_name'))]",
             "name": "diagnostic",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_CoC_SOC_keyvault_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('coc-soc-keyvault_name'))]"
             ],
             "properties": {
-              "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_CoC_SOC_LogAnWks_name'))]",
+              "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('coc-soc-LogAnWks_name'))]",
               "logs": [
                 {
                   "category": "AuditEvent",
@@ -863,14 +865,14 @@
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
             "name": "[guid('SecretOfficerOnKeyVault', variables('UniqueStringBasedOnTimeStamp'))]",
-            "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_CoC_SOC_keyvault_name'))]",
+            "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('coc-soc-keyvault_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_CoC_SOC_keyvault_name'))]",
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('coc-soc-keyvault_name'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]"
             ],
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
-                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name')), '2022-08-08', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name')), '2022-08-08', 'full').identity.principalId]",
                 "principalType": "ServicePrincipal"
             }
         },
@@ -878,14 +880,14 @@
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
             "name": "[guid('CryptoOfficerOnKeyVault', variables('UniqueStringBasedOnTimeStamp'))]",
-            "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_CoC_SOC_keyvault_name'))]",
+            "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('coc-soc-keyvault_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_CoC_SOC_keyvault_name'))]",
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('coc-soc-keyvault_name'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]"
             ],
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
-                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name')), '2022-08-08', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name')), '2022-08-08', 'full').identity.principalId]",
                 "principalType": "ServicePrincipal"
             }
         },
@@ -893,14 +895,14 @@
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
             "name": "[guid('SAcontributorOnStorageAccount', variables('UniqueStringBasedOnTimeStamp'))]",
-            "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
+            "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]"
             ],
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name')), '2022-08-08', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name')), '2022-08-08', 'full').identity.principalId]",
                 "principalType": "ServicePrincipal"
             }
         },
@@ -911,14 +913,14 @@
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
             "name": "[guid('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp'))]",
-            "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
+            "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cocsocstorageacct_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
             ],
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                "principalId": "[reference(resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_CoC_HRW_VM_name')), '2023-03-01', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name')), '2023-03-01', 'full').identity.principalId]",
                 "principalType": "ServicePrincipal"
             }
         }
@@ -927,7 +929,7 @@
     "outputs": {
         "CoC_SOC_Automation_IdentityPrincipalID": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccounts_CoC_SOC_Automation_name')), '2022-08-08', 'full').identity.principalId]"
+            "value": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name')), '2022-08-08', 'full').identity.principalId]"
         },
 
         "CoC_SOC_HRW_PIP": {

@@ -110,7 +110,7 @@
             "description": "Name of the Automation Account resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-AutomationAcct"
+        "defaultValue": "CoC-SOC-AA-<UNIQUESTRING>"
     },
     "coc-soc-workerGroupName": {
         "metadata": {
@@ -216,40 +216,40 @@
           "location": {
               "value": "[reference(resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-prod-rg_name')),'2019-10-01','Full').location]"
           },
-          "virtualMachines_CoC_HRW_VM_name": {
+          "coc-soc-HRW_VM_name": {
               "value": "[parameters('coc-soc-HRW_VM_name')]"
           },
-          "virtualNetworks_CoC_SOC_vnet_name": {
+          "coc-soc-vnet_name": {
               "value": "[parameters('coc-soc-vnet_name')]"
           },
-          "storageAccounts_cocsocstorageacct_name": {
+          "coc-soc-storageAccount_name": {
               "value": "[parameters('coc-soc-storageAccount_name')]"
           },
-          "vaults_CoC_SOC_keyvault_name": {
+          "coc-soc-keyvault_name": {
               "value": "[parameters('coc-soc-keyvault_name')]"
           },
-          "workspaces_CoC_SOC_LogAnWks_name": {
+          "coc-soc-LogAnWks_name": {
               "value": "[parameters('coc-soc-LogAnWks_name')]"
           },
-          "automationAccounts_CoC_SOC_Automation_name": {
+          "coc-soc-automationAccount_name": {
               "value":  "[parameters('coc-soc-automationAccount_name')]"
           },
-          "networkSecurityGroups_nsg_name":{
+          "coc-soc-nsg_name":{
               "value": "[parameters('coc-soc-nsg_name')]"
           },
-          "adminUsername": {
+          "coc-soc-HRW_adminUsername": {
               "value": "[parameters('coc-soc-HRW_adminUsername')]"
           },
           "adminPassword": {
               "value": "[parameters('coc-soc-HRW_adminPassword')]"
           },
-          "storage_Account_Type": {
+          "coc-soc-HRW_adminPassword": {
               "value": "StandardSSD_LRS"
           },
-          "workerGroupName": {
+          "coc-soc-workerGroupName": {
               "value": "[parameters('coc-soc-workerGroupName')]"
           },
-          "createWorkerGroup": {
+          "coc-soc-createWorkerGroup": {
               "value": "yes"
           }
         }
