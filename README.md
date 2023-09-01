@@ -27,7 +27,7 @@ To initiate the deployment of the LAB environment, verify to have the *Owner* ro
 |Coc-soc-keyvault_name |The name of the key vault for the SOC environment|CoC-SOC-KV-\<UNIQUESTRING>|
 |Coc-soc-storageAccount_name |The name of the storage account for the SOC environment|cocsocstorage-\<UNIQUESTRING>|
 |Coc-soc-LogAnWks_name |The name of the Log Analytics Workspace for the SOC environment|CoC-SOC-LA-\<UNIQUESTRING>|
-|Coc-soc-automatioAccount_name |The name of the automation account for the SOC environment|CoC-SOC-AutomationAcct|
+|Coc-soc-automatioAccount_name |The name of the automation account for the SOC environment|CoC-SOC-AA-\<UNIQUESTRING>|
 |CoC-SOC-workerGroup_name|The name of the Hybrid Worker Group for the SOC environment|CoC-HRW-Windows|
 |Coc-soc-HRW_VM_name |The name of the Hybrid RunBook Worker VM for the SOC environment|CoC-SOC-HRW|
 |Coc-soc-HRW_adminUsername |The name of the admin user for the Hybrid RunBook Worker VM for the SOC environment|cocsocadmin|
@@ -196,8 +196,8 @@ The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.
 
 > [!NOTE]
 > The RunBook performs the actions above with the System Managed Identity of the automation account. The identity has been granted the necessary permissions to access both Production and SOC resource groups during deployment process of LAB environment described in this guide. If you want to implement complete solution described in the [article](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/), using different subscriptions and resource groups, please make sure that System Managed Identity of automation account has following permissions:
->- *Contributor*: on the resource group of the virtual machine to be processed
->- *Key Vault Secrets User*: on the Key Vault holding the BEK keys
+>- *Contributor*: on the Production resource group of the virtual machine to be processed (needed to create the snapshots)
+>- *Key Vault Secrets User*: on the Production Key Vault holding the BEK keys (needed to read  the BEK keys)
 >
 >Additionally, if the Key Vault has the firewall enabled, ensure that the public IP address of the Hybrid RunBook Worker VM is allowed through the firewall.
 
