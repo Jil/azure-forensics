@@ -240,10 +240,10 @@
           "coc-soc-HRW_adminUsername": {
               "value": "[parameters('coc-soc-HRW_adminUsername')]"
           },
-          "adminPassword": {
+          "coc-soc-HRW_adminPassword": {
               "value": "[parameters('coc-soc-HRW_adminPassword')]"
           },
-          "coc-soc-HRW_adminPassword": {
+          "coc-soc-storageAccount_Type": {
               "value": "StandardSSD_LRS"
           },
           "coc-soc-workerGroupName": {
