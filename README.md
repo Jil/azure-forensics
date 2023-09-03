@@ -182,7 +182,12 @@ The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.
 
 1. Takes the subscription ID, the resource group name, and the virtual machine name of the VM to be processed as input parameters
 1. Takes a boolean parameter to indicate whether to calculate the hash of the digital evidence and a string parameter to specify the hash algorithm to use (if applicable)
-1. Reads information about the SOC environment stored in the Automation Account variables
+1. Reads information about the SOC environment stored in the following Automation Account variables:
+    + '*destKV*': the name of the Key Vault in the SOC environment (sample value: 'CoC-SOC-KV-3108')
+    + '*destRGName*': the name of the resource group in the SOC environment (sample value: 'CoC-SOC')
+    + '*destSAblob*': the name of the storage account in the SOC environment containing the blob container named immutable(sample value: 'cocsocstorage3108')
+    + '*destSAfile*': the name of the storage account in the SOC environment containing the files share for hash calculation. It can coincide with the storage account containing the blob container above (sample value: 'cocsocstorage3108')
+    + '*destSubId*': the subscription ID of the SOC environment (sample value: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
 1. Signs in to Azure with the System Managed Identity of the automation account
 1. Creates temporary snapshots of the OS disk and Data disks of the virtual machine
 1. Copies the snapshots to the SOC Azure Blob container named *immutable*
