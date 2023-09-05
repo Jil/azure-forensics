@@ -248,9 +248,6 @@
           },
           "coc-soc-workerGroupName": {
               "value": "[parameters('coc-soc-workerGroupName')]"
-          },
-          "coc-soc-createWorkerGroup": {
-              "value": "yes"
           }
         }
       }
