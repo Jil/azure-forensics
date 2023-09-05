@@ -58,17 +58,6 @@
             "type": "String",
             "defaultValue": "CoC-SOC-AA-LA-<UNIQUESTRING>"
         },
-        "coc-soc-createWorkerGroup": {
-            "metadata": {
-                "description": "Create Hybrid Runbook Worker Group"
-            },
-            "type": "string",
-            "defaultValue": "yes",
-            "allowedValues": [
-                "no",
-                "yes"
-            ]
-        },
         "coc-soc-workerGroupName": {
             "metadata": {
                 "description": "Name of the Hybrid Runbook Worker Group"
@@ -116,7 +105,6 @@
     "resources": [
         {
             "type": "Microsoft.Automation/automationAccounts",
-            "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
             "apiVersion": "2022-08-08",
             "name": "[parameters('coc-soc-automationAccount_name')]",
             "location": "[parameters('coc-soc-Location')]",
@@ -137,7 +125,6 @@
             "resources": [
                 {
                 "name": "[parameters('coc-soc-workerGroupName')]",
-                "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
                 "type": "hybridRunbookWorkerGroups",
                 "apiVersion": "2022-02-22",
                 "dependsOn": [
@@ -147,7 +134,6 @@
                 "resources" : [
                     {
                     "name": "[guid('testhw', variables('UniqueStringBasedOnTimeStamp'))]",
-                    "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
                     "type": "hybridRunbookWorkers",
                     "apiVersion": "2021-06-22",
                     "dependsOn": [
@@ -162,27 +148,6 @@
                 ]
                 }
             ]
-        },
-        {
-            "type": "Microsoft.Automation/automationAccounts",
-            "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'no')]",
-            "apiVersion": "2022-08-08",
-            "name": "[parameters('coc-soc-automationAccount_name')]",
-            "location": "[parameters('coc-soc-Location')]",
-            "identity": {
-                "type": "SystemAssigned"
-            },
-            "properties": {
-                "publicNetworkAccess": true,
-                "disableLocalAuth": false,
-                "sku": {
-                    "name": "Basic"
-                },
-                "encryption": {
-                    "keySource": "Microsoft.Automation",
-                    "identity": {}
-                }
-            }
         },
 
         {
@@ -258,7 +223,6 @@
 
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "condition": "[equals(parameters('coc-soc-createWorkerGroup'),'yes')]",
             "name": "[concat(parameters('coc-soc-HRW_VM_name'),'/HybridWorkerExtension')]",
             "apiVersion": "2022-03-01",
             "location": "[parameters('coc-soc-Location')]",
