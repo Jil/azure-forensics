@@ -1,3 +1,13 @@
+---
+description: This template deploys the LAB environment for the [Computer Forensics Chain of Custody in Azure](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
+page_type: sample
+products:
+- azure
+- azure-resource-manager
+urlFragment: .armtemplate
+languages:
+- json
+---
 # CoC LAB Deployment
 This guide details the process of deploying the LAB environment for the [Computer Forensics Chain of Custody in Azure](https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/)
 
