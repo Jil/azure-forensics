@@ -188,7 +188,7 @@ This is a sample command to calculate the MD5 hash of 3 files:
 
 This section explains the actions that the RunBook performs to help you understand the CoC process and troubleshoot any issues.
 
-The RunBook execute the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.runbook/Copy-VmDigitalEvidenceWin_v21.ps1) which does the following:
+The RunBook executes the PowerShell script [Copy-VmDigitalEvidenceWin_21.ps1](./.runbook/Copy-VmDigitalEvidenceWin_v21.ps1) which does the following:
 
 1. Takes the subscription ID, the resource group name, and the virtual machine name of the VM to be processed as input parameters
 1. Takes a boolean parameter to indicate whether to calculate the hash of the digital evidence and a string parameter to specify the hash algorithm to use (if applicable)
