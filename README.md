@@ -1,5 +1,5 @@
 ---
-description: This template deploys the LAB environment for the 'Computer Forensics Chain of Custody in Azure' described in https://learn.microsoft.com/en-us/azure/architecture/example-scenario/forensics/
+description: This template deploys the LAB environment for the 'Computer Forensics Chain of Custody in Azure'
 page_type: sample
 products:
 - azure
