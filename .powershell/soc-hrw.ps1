@@ -113,6 +113,7 @@ $regionTable = @{
     "germanywestcentral" = 	"W. Europe Standard Time"
     "norwayeast" = 	"W. Europe Standard Time"
     "switzerlandnorth" = 	"W. Europe Standard Time"
+    "italynorth" = 	"W. Europe Standard Time"
     "uaenorth" = 	"Arabian Standard Time"
 }
 
