@@ -5,14 +5,14 @@
   "parameters": {
     "coc-Location": {
       "type": "string",
-      "defaultValue": "westeurope",
+      "defaultValue": "switzerlandnorth",
       "metadata": {
         "description": "Location for all CoC resources."
       }
     },
     
 
-    "coc-prod-rg_name": {
+    /*"coc-prod-rg_name": {
       "type": "string",
       "defaultValue": "CoC-Production",
       "metadata": {
@@ -37,7 +37,7 @@
         "metadata": {
             "description": "Name of the key vault."
         },
-        "defaultValue": "CoC-Prod-KV-<UNIQUESTRING>",
+        "defaultValue": "CoC-Prod-KV-01",
         "type": "String"
     },
     "coc-prod-VM01_name": {
@@ -59,12 +59,12 @@
             "description": "Admin password for the virtual machine"
         },
         "type": "secureString"
-    },
+    },*/
 
 
     "coc-soc-rg_name": {
       "type": "string",
-      "defaultValue": "CoC-SOC",
+      "defaultValue": "response",
       "metadata": {
         "description": "Name of the resource group dedicated to SOC resources."
       }
@@ -75,13 +75,13 @@
             "description": "Name of the VNET resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-vnet"
+        "defaultValue": "response-vnet"
     },
     "coc-soc-nsg_name": {
         "metadata": {
             "description": "Name of the NSG resource for the SOC"
         },
-        "defaultValue": "CoC-SOC-vnet-soc-subnet01-nsg",
+        "defaultValue": "response-vnet-soc-subnet01-nsg",
         "type": "String"
     },
     "coc-soc-keyvault_name": {
@@ -89,34 +89,34 @@
             "description": "UNIQUE name of the Key Vault resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-KV-<UNIQUESTRING>"
+        "defaultValue": "response-KV-01"
     },
     "coc-soc-storageAccount_name": {
         "metadata": {
             "description": "UNIQUE name of the Storage Account resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "cocsocstorage<UNIQUESTRING>"
+        "defaultValue": "responsestorage01"
     },
     "coc-soc-LogAnWks_name": {
         "metadata": {
             "description": "UNIQUE name of the Log Analytics Workspace resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-LA-<UNIQUESTRING>"
+        "defaultValue": "response-LA-01"
     },
     "coc-soc-automationAccount_name": {
         "metadata": {
             "description": "Name of the Automation Account resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-AA-<UNIQUESTRING>"
+        "defaultValue": "response-AA-01"
     },
     "coc-soc-workerGroupName": {
         "metadata": {
             "description": "Name of the Hybrid Runbook Worker Group"
         },
-        "defaultValue": "CoC-HRW-Windows",
+        "defaultValue": "response-HRW-Windows",
         "type": "string"
     },
     "coc-soc-HRW_VM_name": {
@@ -124,7 +124,7 @@
             "description": "Name of the Hybrid Runbook Worker VM resource for the SOC"
         },
         "type": "String",
-        "defaultValue": "CoC-SOC-HRW"
+        "defaultValue": "response-HRW"
     },
     "coc-soc-HRW_adminUsername": {
         "metadata": {
@@ -150,7 +150,7 @@
       "location": "[parameters('coc-Location')]",
       "properties": {}
     },
-    {
+    /*{
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2020-06-01",
       "name": "[parameters('coc-prod-rg_name')]",
@@ -195,26 +195,26 @@
           }
         }
       }
-    },
+    },*/
 
     {
       "apiVersion": "2019-10-01",
-      "name": "CoC-SOC-nestedDeployment",
+      "name": "response-nestedDeployment",
       "type": "Microsoft.Resources/deployments",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-soc-rg_name'))]",
-        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-prod-rg_name'))]"
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-soc-rg_name'))]"/*,
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-prod-rg_name'))]"*/
       ],
       "resourceGroup": "[parameters('coc-soc-rg_name')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/Azure/forensics/main/.armtemplate/coc-soc.json",
+          "uri": "https://raw.githubusercontent.com/jil/azure-forensics/main/.armtemplate/coc-soc.json",
           "contentVersion": "1.0.0.0"
         },
       "parameters": {
           "coc-soc-location": {
-              "value": "[reference(resourceId('Microsoft.Resources/resourceGroups/', parameters('coc-prod-rg_name')),'2019-10-01','Full').location]"
+              "value": "[parameters('coc-Location')]"
           },
           "coc-soc-HRW_VM_name": {
               "value": "[parameters('coc-soc-HRW_VM_name')]"
@@ -251,13 +251,13 @@
           }
         }
       }
-    },
+    }/*,
      {
       "apiVersion": "2019-10-01",
       "name": "CoC-roles-nestedDeployment",
       "type": "Microsoft.Resources/deployments",
       "dependsOn": [
-        "CoC-SOC-nestedDeployment"
+        "response-nestedDeployment"
       ],
       "resourceGroup": "[parameters('coc-prod-rg_name')]",
       "properties": {
@@ -268,11 +268,11 @@
       },
       "parameters": {
           "IdentityPrincipalID": {
-              "value": "[reference('CoC-SOC-nestedDeployment').outputs.CoC_SOC_Automation_IdentityPrincipalID.value]"
+              "value": "[reference('response-nestedDeployment').outputs.CoC_SOC_Automation_IdentityPrincipalID.value]"
           }
         }
       }
-    }
+    }*/
 
   ],
 
@@ -280,12 +280,12 @@
   "outputs": {
     "CoC_SOC_Automation_IdentityPrincipalID": {
       "type": "string",
-      "value": "[reference('CoC-SOC-nestedDeployment').outputs.CoC_SOC_Automation_IdentityPrincipalID.value]"
+      "value": "[reference('response-nestedDeployment').outputs.CoC_SOC_Automation_IdentityPrincipalID.value]"
     },
 
     "CoC_SOC_HRW_PIP": {
       "type": "string",
-      "value": "[reference('CoC-SOC-nestedDeployment').outputs.CoC_SOC_HRW_PIP.value]"
+      "value": "[reference('response-nestedDeployment').outputs.CoC_SOC_HRW_PIP.value]"
     }
     
   }
