@@ -719,6 +719,32 @@
             }
         },
         {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('coc-soc-vnet_name'), '/soc-subnet02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('memdump-nsg_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "172.16.1.0/24",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('memdump-nsg_name'))]"
+                },
+                "serviceEndpoints":  [
+                    {
+                        "service": "Microsoft.Storage",
+                        "locations": [
+                             "[parameters('coc-soc-Location')]"
+                        ]
+                    }
+                ],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2023-01-01",
             "name": "[concat(parameters('coc-soc-storageAccount_name'), '/default')]",
