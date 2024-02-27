@@ -23,6 +23,13 @@
             "defaultValue": "response-vnet-soc-subnet01-nsg",
             "type": "String"
         },
+        "memdump-nsg_name": {
+            "metadata": {
+                "description": "Name of the NSG resource exposed to compromised machines"
+            },
+            "defaultValue": "response-vnet-soc-subnet02-nsg-danger",
+            "type": "String"
+        },
         "coc-soc-keyvault_name": {
             "metadata": {
                 "description": "UNIQUE name of the Key Vault resource for the SOC"
@@ -35,14 +42,21 @@
                 "description": "UNIQUE name of the Storage Account resource for the SOC"
             },
             "type": "String",
-            "defaultValue": "cocsocstorage01"
+            "defaultValue": "responsestorage01"
         },
         "coc-soc-storageAccount_Type": {
             "metadata": {
-                "description": "Storage Account Type"
+                "description": "Storage Account Type for VM disks only"
             },
             "defaultValue": "StandardSSD_LRS",
             "type": "string"
+        },
+        "memdump-storageAccount_name": {
+            "metadata": {
+                "description": "UNIQUE name of the Storage Account resource that is mapped onto compromised machines"
+            },
+            "type": "String",
+            "defaultValue": "responsestorage02danger"
         },
         "coc-soc-LogAnWks_name": {
             "metadata": {
@@ -53,10 +67,17 @@
         },
         "coc-soc-automationAccount_name": {
             "metadata": {
-                "description": "Name of the Automation Account resource for the SOC"
+                "description": "Name of the Automation Account resource used to run tasks inside the SOC zone"
             },
             "type": "String",
             "defaultValue": "response-AA-LA-01"
+        },
+        "memdump-automationAccount_name": {
+            "metadata": {
+                "description": "Name of the Automation Account resource used to execute powershell on compromised machines"
+            },
+            "type": "String",
+            "defaultValue": "response-AA-LA-02"
         },
         "coc-soc-workerGroupName": {
             "metadata": {
@@ -149,7 +170,6 @@
                 }
             ]
         },
-
         {
             "type": "Microsoft.Automation/automationAccounts/variables",
             "apiVersion": "2022-08-08",
@@ -213,6 +233,65 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name'))]",
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
+            ],
+            "properties": {
+                "isEncrypted": false,
+                "value": "[concat('\"',subscription().subscriptionId,'\"')]",
+                "description": "The subscription containing the storage account being copied to (ex. 00112233-4455-6677-8899-aabbccddeeff)"
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2022-08-08",
+            "name": "[parameters('memdump-automationAccount_name')]",
+            "location": "[parameters('coc-soc-Location')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "publicNetworkAccess": true,
+                "disableLocalAuth": false,
+                "sku": {
+                    "name": "Basic"
+                },
+                "encryption": {
+                    "keySource": "Microsoft.Automation",
+                    "identity": {}
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/variables",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('memdump-automationAccount_name'), '/destRGName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('memdump-automationAccount_name'))]"
+            ],
+            "properties": {
+                "isEncrypted": false,
+                "value": "[concat('\"',resourceGroup().name,'\"')]",
+                "description": "The name of the resource group containing the storage account being copied to "
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/variables",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('memdump-automationAccount_name'), '/destSAfile')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('memdump-automationAccount_name'))]"
+            ],
+            "properties": {
+                "isEncrypted": false,
+                "value": "[concat('\"',parameters('memdump-storageAccount_name'),'\"')]",
+                "description": "The name of the storage account for FILE"
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/variables",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('memdump-automationAccount_name'), '/destSubId')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('memdump-automationAccount_name'))]"
             ],
             "properties": {
                 "isEncrypted": false,
@@ -348,6 +427,28 @@
                             "privateLinkServiceNetworkPolicies": "Enabled"
                         },
                         "type": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "name": "soc-subnet02",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet02')]",
+                        "properties": {
+                            "addressPrefix": "172.16.1.0/24",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('memdump-nsg_name'))]"
+                            },
+                            "serviceEndpoints": [
+                                {
+                                    "service": "Microsoft.Storage",
+                                    "locations": [
+                                        "[parameters('coc-soc-Location')]"
+                                    ]
+                                }
+                            ],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
                     }
                 ],
                 "virtualNetworkPeerings": [],
@@ -418,6 +519,55 @@
                             "enabled": true
                         },
                         "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2023-01-01",
+            "name": "[parameters('memdump-storageAccount_name')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('coc-soc-vnet_name'), 'soc-subnet02')]"
+            ],
+            "location": "[parameters('coc-soc-Location')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "dnsEndpointType": "Standard",
+                "defaultToOAuthAuthentication": false,
+                "publicNetworkAccess": "Enabled",
+                "allowCrossTenantReplication": true,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                    "resourceAccessRules": [],
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules":  [
+                        {
+                            "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('coc-soc-vnet_name')), '/subnets/soc-subnet02')]",
+                            "action": "Allow",
+                            "state": "Succeeded"
+                        }
+                    ],
+                    "ipRules": [],
+                    "defaultAction": "Deny"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
                             "keyType": "Account",
                             "enabled": true
                         }
@@ -822,21 +972,6 @@
             "properties": {
                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
                 "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('coc-soc-automationAccount_name')), '2022-08-08', 'full').identity.principalId]",
-                "principalType": "ServicePrincipal"
-            }
-        },
-        {
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2022-04-01",
-            "name": "[guid('OwnerOnStorageAccount-VMidentity', variables('UniqueStringBasedOnTimeStamp'))]",
-            "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('coc-soc-storageAccount_name'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name'))]"
-            ],
-            "properties": {
-                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                "principalId": "[reference(resourceId('Microsoft.Compute/virtualMachines', parameters('coc-soc-HRW_VM_name')), '2023-03-01', 'full').identity.principalId]",
                 "principalType": "ServicePrincipal"
             }
         }
