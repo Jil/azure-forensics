@@ -383,6 +383,12 @@
             "location": "[parameters('coc-soc-Location')]"
         },
         {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('memdump-nsg_name')]",
+            "location": "[parameters('coc-soc-Location')]"
+        },
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2023-04-01",
             "name": "[parameters('coc-soc-vnet_name')]",
@@ -594,6 +600,26 @@
                 "description": "This version is for Windows Hybrid Runbook Worker",
                  "publishContentLink": {
                     "uri": "https://raw.githubusercontent.com/jil/azure-forensics/main/.runbook/Copy-VmDigitalEvidenceWin_v21.ps1",
+                    "version": "2.1.0.0"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('memdump-automationAccount_name'), '/Copy-VmMemoryDumpWindows')]",
+            "location": "[parameters('coc-soc-Location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('memdump-automationAccount_name'))]"
+            ],
+            "properties": {
+                "runbookType": "PowerShell",
+                "logVerbose": false,
+                "logProgress": false,
+                "logActivityTrace": 0,
+                "description": "This version is for Windows Hybrid Runbook Worker",
+                 "publishContentLink": {
+                    "uri": "https://raw.githubusercontent.com/jil/azure-forensics/main/.runbook/Copy-VmMemoryDumpWindows.ps1",
                     "version": "2.1.0.0"
                 }
             }
