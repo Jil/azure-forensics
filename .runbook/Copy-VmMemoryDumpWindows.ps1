@@ -69,6 +69,8 @@ Set-AzContext -Subscription $SubscriptionId
 
 ################################## Check VM details #########################################
 
+Write-Output "Checking VM details (OS=Windows,Status=Running)"
+
 $vm = Get-AzVM -ResourceGroupName $ResourceGroupName -Name $VirtualMachineName
 
 if ((Get-AzVM -ResourceGroupName $ResourceGroupName -Name $VirtualMachineName -Status).Statuses[1].displayStatus -notmatch "running"  ) {
@@ -81,16 +83,32 @@ if ($vm.OSProfile.WindowsConfiguration -eq $Null ) {
     Exit  
 }
 
-# TODO: add dest VM to network firewall
+Write-Output "Collect target VM network ID"
+$net = $vm.NetworkProfile.NetworkInterfaces.Id.Split('/')[-1] 
+$subnetId = (Get-AzNetworkInterface -Name $net).IpConfigurations.subnet.id
 
-################################## Mounting fileshare #######################################
 
-# Get destination storage encryption key
-Set-AzContext -Subscription $destSubId -ErrorAction Stop | Out-Null
+Write-Output "Moving into destination subscription context"
+Set-AzContext -Subscription $destSubId -ErrorAction Stop 
+
+Write-Output "Read destination storage account key"
 $storageAccount = Get-AzStorageAccount -ResourceGroupName $destRGName -Name $destSAfile
 $keys = $storageAccount | Get-AzStorageAccountKey
 $destSAKey =  $keys[0].value
-Set-AzContext -Subscription $SubscriptionId -ErrorAction Stop | Out-Null
+
+if ($vm.Location -notmatch $storageAccount.Location) {
+    Write-Output "The target VM is not in same region as the destination storage. Additional peering is required."
+    # TODO: handle it
+    Exit
+}
+
+Write-Output "Add target VM subnet to destination storage inbound rules"
+Add-AzStorageAccountNetworkRule -ResourceGroupName $destRGName -Name $destSAfile -VirtualNetworkResourceId $subnetId
+
+
+
+Write-Output "Moving into target VM subscription context"
+Set-AzContext -Subscription $SubscriptionId -ErrorAction Stop 
 
 $scriptBlock = @"
 If (!(Test-Path "I:")) {

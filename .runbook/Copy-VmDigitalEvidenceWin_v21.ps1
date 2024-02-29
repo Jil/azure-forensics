@@ -210,7 +210,7 @@ if ($bios) {
 
     Write-Output "Logging in to Azure..."
     Connect-AzAccount -Identity
-    Set-AzContext -Subscription $SubscriptionId
+    Set-AzContext -Subscription $destSubId
     ################################## Mounting fileshare #######################################
 
     If (!(Test-Path $targetWindowsDir)) {
@@ -230,6 +230,7 @@ if ($bios) {
 
     ################################## Get VM and Disks #########################################
 
+    Set-AzContext -Subscription $SubscriptionId 
     $vm = Get-AzVM -ResourceGroupName $ResourceGroupName -Name $VirtualMachineName
 
     $disks = @()  # Array to hold both OS and Data Disks
